@@ -1,0 +1,1003 @@
+\documentclass[11pt]{extarticle}
+\usepackage{fullpage,amsmath,amsfonts,microtype,nicefrac,amssymb, amsthm}
+\usepackage[left=1in, bottom=1in, top=1in, right = 1in]{geometry}
+\usepackage{textcomp}
+\usepackage{mathpazo}
+\usepackage{mathrsfs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+
+\usepackage{microtype}
+
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{ragged2e}
+
+\setlength{\parindent}{24pt}
+\setlength{\jot}{8pt}
+
+
+\usepackage[shortlabels]{enumitem}
+
+
+%% FOOTNOTES
+\usepackage[bottom]{footmisc}
+\usepackage{footnotebackref}
+
+
+%% FIGURE ENVIRONMENT
+%\graphicspath{{}}
+\usepackage[margin=15pt, font=small, labelfont={bf}, labelsep=period]{caption}
+\usepackage{subcaption}
+\captionsetup[figure]{name={Figure}, position=above}
+\usepackage{float}
+\usepackage{epstopdf}
+
+
+%% NEW COMMANDS
+\renewcommand{\baselinestretch}{1.25} 
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\indep}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+\renewcommand{\b}{\begin}
+\newcommand{\e}{\end}
+
+%% NEWTHEOREM
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{ex}[thm]{Example}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{cor}[thm]{Corollary}
+
+%% LINKS and COLORS
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\definecolor{myred}{RGB}{163, 32, 45}
+\hypersetup{
+	%backref=true,
+	%pagebackref=true,
+	colorlinks=true,
+	urlcolor=myred,
+	citecolor=myred, 
+	linktoc=all,     
+	linkcolor=myred,
+}
+
+%% TABLE OF CONTENTS
+\addto\captionsenglish{
+	\renewcommand{\contentsname}
+	{}% This removes the heading over the table of contents.
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%            END PREAMBLE           %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{202A: Dynamic Programming and Applications\\[5pt] {\Large \textbf{Homework \#1}}}
+
+\author{Rafael Pintro Schmitt}
+
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 1: Discrete Time Markov Chains}
+
+Time is discrete, with $t \in \{0, 1, ...\}$. Consider the stochastic process $\{ y_t \}$ which follows a Markov chain. Let $y_t$ denote the employment / earnings state of an individual in periods $t$. Consider the state space $y_t \in Y = \{ y^U, y^E \}$, where $y^U$ corresponds to unemployment and $y^E$ corresponds to employment. Let $\bm y$ denote the column vector $(y^U, y^E)'$ representing this state space (this is the grid you would construct on a computer). Suppose the employment dynamics of the individual are characterized by the invariant transition matrix 
+\begin{equation*}
+	P = \begin{pmatrix} \alpha & 1 - \alpha \\ 1 - \beta & \beta \end{pmatrix}.
+\end{equation*}
+We interpret a time period as a quarter. 
+
+\vspace{5mm}
+\noindent
+\begin{enumerate}[(a)]
+\item Give economic interpretations of $\alpha = P_{11}$ and $\beta = P_{22}$
+
+\textbf{Answer:} $\alpha$ is the probability for an unemployed person to remain unemployed, $\beta$ is the probability that an employed person remains employed (in the next quarter).
+\item Why do the rows of $P$ sum to $1$?
+
+\textbf{Answer:} Since there are two states, we have that the probability of an unemployed person remaining unemployed OR changing to employment must be one (analogously for employed). Therefore both rows must sum to 1.
+\item Is there an absorbing state in this model?
+
+\textbf{Answer:} No, the model does not have an absorbing state. Both states (employed and unemployed) have positive probabilities of transitioning to the other state.
+\item Compute the probability of being unemployed two quarters after being employed. 
+
+\textbf{Answer:} There are 2 paths: (1) Start employed, continue employed, become unemployed; (2) Start employed, become unemployed, remain unemployed.\\
+The probability of (1) is $(\beta)\times (1-\beta)$ and the probability of (2) is $(1-\beta)\times (\alpha)$. So the probability of being unemployed two quarters after being employed is simply the sum of the two: 
+$$(\beta)\times (1-\beta) + (1-\beta)\times (\alpha)$$
+\item Denote the \textit{marginal (probability) distribution} of $y_t$ at time $t$ by $\psi_t$. $\psi_t(y^L)$ is the probability that process $y_t$ is in state $y^L$ at time $t$. It is easiest to think of $\psi_t$ as a time-varying row vector. Use the law of total probability to decompose $y_{t+1} = y^L$, accounting for all the possible ways in which state $y^L$ can be reached at time $t+1$. 
+
+\textbf{Answer:} $y_{t+1}$ is a function of the probability of being in each state at $t$. Let $y_{t}[1]$ and $y_{t}[2]$ be the share of unemployed and employed at time $t$ - that is, the elements of $y_{t}$. In the simple binary case (unemployed and employed), this becomes:
+$y_{t+1}[1] = P(U_{t+1}|U_{t})\times P(U_{t}) + P(U_{t+1}|E_{t})\times P(E_{t})$
+Where $P(U_{t+1}|U_{t})$ is the probability of being unemployed at time $t+1$ given that you were unemployed at time $t$, and the result above is obtained by the law of total probability ($\{E{t},U{t} \}$ is a partition of the state space at time $t$). Similarly,
+$y_{t+1}[2] = P(E_{t+1}|E_{t})\times P(E_{t}) + P(E_{t+1}|U_{t})\times P(U_{t})$.\\
+Using the transition matrix, we can then find that: 
+$y_{t+1}[1] = \alpha \times y_{t}[1] + (1-\beta) \times y_{t}[2]$
+$y_{t+1}[2] = (1-\alpha) \times y_{t}[1] + (\beta) \times y_{t}[2]$
+
+\item Show that the resulting equation can be written as the vector-matrix product
+\begin{equation*}
+	\psi_{t+1} = \psi_t P.
+\end{equation*}
+Therefore: The evolution of the marginal distribution of a Markov chain is obtained by post-multiplying by the transition matrix. 
+
+\textbf{Answer:} The answer to the previous point is just the definition of vector-matrix multiplication for a vector $\psi_{t+1}$ which is $1\times2$ and a matrix $2\times 2$
+\item Show that
+\begin{equation*}
+	X_0 \sim \psi_0 \implies X_t \sim \psi_0 P^t,
+\end{equation*}
+where $\sim$ reads ``is distributed according to''. 
+
+\textbf{Answer:} Noting that $X_i$ is a Bernoulli random variable, we can use the previous results and a simple induction argument to obtain the desired conclusion.  
+\\
+We prove by induction that \( X_t \sim \psi_0 P^t \) for all \( t \geq 0 \).
+
+\textbf{Base case}: For \( t = 0 \),
+\[
+X_0 \sim \psi_0 = \psi_0 P^0 =  \psi_0 I = \psi_0.
+\]
+
+\textbf{Inductive step}: Assume \( X_k \sim \psi_0 P^k \) for some \( k \geq 0 \). Then for \( t = k + 1 \),
+\[
+X_{k+1} \sim X_k P \sim (\psi_0 P^k) P = \psi_0 P^{k+1}.
+\]
+
+Thus, by induction, \( X_t \sim \psi_0 P^t \) for all \( t \).
+
+\item We call $\psi^*$ a \textit{stationary distribution} of the Markov chain if it satisfies 
+\begin{equation*}
+	\psi^* = \psi^* P.
+\end{equation*}
+Compute the probability of being unemployed $n$ quarters after being employed. Take $n \to \infty$ and find the stationary distribution of this Markov chain. Find the stationary distribution by alternatively plugging into the above equation for $\psi^*$. 
+
+\textbf{Answer:} In the period after being employed, the probability of being unemployed and employed are, respectively, \(1 - \beta\) and \(\beta\). Thus, after \(n\) periods, the probability of being unemployed is the first coordinate of the vector:
+
+\[
+\begin{bmatrix} 1 - \beta & \beta \end{bmatrix} \begin{bmatrix} \alpha & 1 - \alpha \\ 1 - \beta & \beta \end{bmatrix}^{n-1}
+\]
+
+As pointed out in this \href{https://math.stackexchange.com/questions/588251/proof-that-markov-chains-converges-to-the-stationary-distribution}{reference}, regardless of the initial vector we are dealing with, as $n$ goes to infinity the expression above converges to $\psi^*$ as long as the matrix $P$ is irreducible and aperiodic. Therefore the probability of being employed after $n$ periods converges to $\psi^*[2]$. To find the stationary distribution, let $\psi^* = \begin{pmatrix} \pi_U & \pi_E \end{pmatrix}$ be the stationary distribution. Then, $\psi^*$ satisfies:
+    \[
+    \psi^* = \psi^* P
+    \]
+    Expanding the equation:
+    \[
+    \begin{pmatrix} \pi_U & \pi_E \end{pmatrix} = \begin{pmatrix} \pi_U \alpha + \pi_E (1 - \beta) & \pi_U (1 - \alpha) + \pi_E \beta \end{pmatrix}
+    \]
+    This yields the system of equations:
+    \[
+    \pi_U = \pi_U \alpha + \pi_E (1 - \beta)
+    \]
+    \[
+    \pi_E = \pi_U (1 - \alpha) + \pi_E \beta
+    \]
+    Additionally, the probabilities must sum to 1:
+    \[
+    \pi_U + \pi_E = 1
+    \]
+    Solving the first equation:
+    \[
+    \pi_U (1 - \alpha) = \pi_E (1 - \beta)
+    \]
+    Substituting $\pi_E = 1 - \pi_U$:
+    \[
+    \pi_U (1 - \alpha) = (1 - \pi_U) (1 - \beta)
+    \]
+    \[
+    \pi_U (1 - \alpha) + \pi_U (1 - \beta) = 1 - \beta
+    \]
+    \[
+    \pi_U (2 - \alpha - \beta) = 1 - \beta
+    \]
+    \[
+    \pi_U = \frac{1 - \beta}{2 - \alpha - \beta}
+    \]
+    Consequently,
+    \[
+    \pi_E = 1 - \pi_U = \frac{1 - \alpha}{2 - \alpha - \beta}
+    \]
+
+\item Suppose $y_0 = y^H$. Solve for $\mathbb E_0 (y_t)$. Use the law of total / iterated expectation to relate expectation to probabilities. Then use the formulas for marginal (probability) distributions derived above. 
+
+\textbf{Answer:} we know that:
+   \[
+   \mathbb{E}_0(y_t) = \mathbb{E}_0\left( \mathbb{E}_0(y_t \mid y_{t-1}) \right)
+   \]
+Let \( y^U = 0 \) (unemployed) and \( y^E = 1 \) (employed). Then:
+   \[
+   \mathbb{E}_0(y_t) = P(y_t = y^E) = \psi_t(y^E)
+   \]
+But as derived above,
+   \[
+   \psi_t = \psi_0 P^t
+   \]
+   where \( \psi_0 = \begin{bmatrix} 0 & 1 \end{bmatrix} \) if \( y_0 = y^H \) corresponds to employment, and \( \psi_0 = \begin{bmatrix} 1 & 0 \end{bmatrix} \) if it corresponds to unemployment. For the employment case, we have:
+Therefore:
+   \[
+   \mathbb{E}_0(y_t) = \begin{bmatrix} 0 & 1 \end{bmatrix} P^t \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+   \]
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 2: Proof of the Contraction Mapping Theorem}
+
+In class, we defined the Bellman operator $B$, which operates on functions $w$, and is defined by
+\begin{equation*}
+	(Bw)(x) \equiv \max_{x' \in \Gamma(x)} \bigg\{ F(x, x') + \beta w(x') \bigg\}
+\end{equation*}
+for all $x \in \mathcal X$ in the state space, where $\Gamma(x)$ is some constraint set---in our case, this was the budget constraint. The definition is expressed pointwise, but it applies to all possible values in the state space. We call $B$ an operator because it maps a function $w$ to a new function $Bw$. So both $w$ and $Bw$ map $\mathcal X$ into $\mathbb R$. Operator $B$ maps \textit{functions} and is therefore called a functional operator. In class, we showed that the solution of the Bellman equation---the value function---is a fixed point of the Bellman operator.
+
+What does it mean to \textit{iterate} $B^n w$?
+\begin{align*}
+	(Bw) (x) &= \max_{x' \in \Gamma(x)} \bigg\{ F(x, x') + \beta w(x') \bigg\} \\
+	(B(Bw)) (x) &= \max_{x' \in \Gamma(x)} \bigg\{ F(x, x') + \beta (Bw)(x') \bigg\} \\
+	(B(B^2w)) (x) &= \max_{x' \in \Gamma(x)} \bigg\{ F(x, x') + \beta (B^2w)(x') \bigg\} \\
+	\vdots & \vdots  \\
+	(B(B^nw)) (x) &= \max_{x' \in \Gamma(x)} \bigg\{ F(x, x') + \beta (B^nw)(x') \bigg\}.
+\end{align*}
+What does it mean for functions to converge to a limiting function? Let $v_0$ be some guess for the value function, then convergence would mean
+\begin{equation*}
+	\lim_{n \to \infty} B^n v_0 = v.
+\end{equation*}
+And why might $B^n w$ converge as $n \to \infty$? The answer is that $B$ is a \textit{contraction mapping}.
+
+
+\vspace{5mm}
+\begin{defn}
+	
+	Let $(S, d)$ be a metric space and $B: S \to S$ be a function that maps $S$ into intself. $B$ is a contraction mapping if for some $\beta \in (0, 1)$, $d(Bf, Bg) \leq \beta d(f, g)$, for any two functions $f$ and $g$.\footnote{
+		A metric $d$ is a way of representing the distance between two functions, or two members of (metric) space $S$. One example: the supremum pointwise gap.
+	}
+	
+\end{defn}
+
+
+\vspace{5mm}
+\noindent
+Intuitively, $B$ is a contraction mapping if applying the operator $B$ to any two functions $f$ and $g$ (that are not the same) moves them strictly closer together. $Bf$ and $Bg$ are strictly closer together than $f$ and $g$. We can now state the contraction mapping theorem. 
+
+
+\vspace{5mm}
+\begin{thm}
+
+	If $(S, d)$ is a complete metric space and $B: S \to S$ is a contraction mapping, then: 
+	\begin{enumerate}[(i)]
+		\item $B$ has exactly one fixed point $v \in S$
+		\item For any $v_0 \in S$, $\lim_{n \to \infty} B^n v_0 = v$
+		\item $B^n v_0$ has an exponential convergence rate at least as great as $- \ln(\beta)$
+	\end{enumerate}
+	
+\end{thm}
+
+
+\vspace{5mm}
+\noindent
+In this problem, we will illustrate and prove the contraction mapping theorem.
+
+\begin{enumerate}[(a)]
+\item Consider the contraction mapping $(Bw)(x) \equiv h(x) + \alpha w(x)$ with $\alpha \in (0, 1)$. Iteratively apply the operator $B$ and show that 
+\begin{equation*}
+	\lim_{n \to \infty} (B^n f)(x) = \frac{h(x)}{1-\alpha}
+\end{equation*}
+Argue that this shows that the fixed point of this operator $B$ is consequently the function $v(x) = \frac{1}{1-\alpha} h(x)$. Show that $(Bv)(x) = v(x)$. 
+
+\textbf{Answer:} let’s define \( w_n(x) = (B^n w)(x) \). We apply \( B \) repeatedly:
+
+First iteration:
+   \[
+   w_1(x) = (Bw)(x) = h(x) + \alpha w(x).
+   \]
+   
+Second iteration:
+   \[
+   w_2(x) = (Bw_1)(x) = h(x) + \alpha w_1(x) = h(x) + \alpha [h(x) + \alpha w_0(x)] = h(x) + \alpha h(x) + \alpha^2 w_0(x).
+   \]
+   
+Third iteration:
+\begin{align*}
+    w_3(x) &= (Bw_2)(x) = h(x) + \alpha w_2(x) = h(x) + \alpha \left[h(x) + \alpha h(x) + \alpha^2 w_0(x)\right] \\
+           &= h(x) + \alpha h(x) + \alpha^2 h(x) + \alpha^3 w_0(x).
+\end{align*}
+From the above steps, a simple induction argument can be invoked to show:
+\[
+w_n(x) = h(x) + \alpha h(x) + \alpha^2 h(x) + \dots + \alpha^{n-1} h(x) + \alpha^n w_0(x).
+\]
+This can be expressed using a finite geometric series:
+\[
+w_n(x) = h(x) \sum_{k=0}^{n-1} \alpha^k + \alpha^n w_0(x) = h(x) \left( \frac{1 - \alpha^n}{1 - \alpha} \right) + \alpha^n w_0(x).
+\]
+Since \( \alpha \in (0, 1) \), as \( n \to \infty \), \( \alpha^n \to 0 \). Therefore,
+\[
+\lim_{n \to \infty} w_n(x) = h(x) \left( \frac{1 - 0}{1 - \alpha} \right) + 0 = \frac{h(x)}{1 - \alpha}.
+\]
+This shows that
+\[
+\lim_{n \to \infty} (B^n f)(x) = \frac{h(x)}{1 - \alpha}.
+\]
+The limiting function is \( v(x) = \frac{h(x)}{1 - \alpha} \). We have \( (Bv)(x) \):
+\[
+(Bv)(x) = h(x) + \alpha v(x) = h(x) + \alpha \left( \frac{h(x)}{1 - \alpha} \right) = h(x) \left( \frac{1 - \alpha + \alpha}{1 - \alpha} \right) = \frac{h(x)}{1 - \alpha} = v(x).
+\]
+
+\item \textbf{Optional:} Now we will prove the contraction mapping theorem in 3 steps (we will not prove the convergence rate). Show that $\{ B^n f_0\}_{n=0}^\infty$ is a Cauchy sequence. (Cauchy sequence definition: Fix any $\epsilon > 0$. Then there exists $N$ such that $d(B^m f_0, B^n f_0) \leq \epsilon$ for all $m, n \leq N$.) 
+
+\item \textbf{Optional:} Show that the limit point $v$ is a fixed point of $B$. 
+
+\item \textbf{Optional:} Show that only one fixed point exists. 
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 3: Blackwell's Sufficiency Conditions}
+
+We now show that there are in fact sufficient conditions for an operator to be contraction mapping.
+
+\begin{thm}[Blackwell's Sufficient Conditions]
+	
+	Let $X \subset \mathbb R^l$ and let $C(X)$ be a space of bounded functions $f:X \to \mathbb R$, with the sup-metric. Let $B : C(X) \to C(X)$ be an operator satisfying two conditions:
+	\begin{enumerate}[1.]
+		\item monotonicity: if $f,g\in C(X)$ and $f(x)\leq g(x)$ $\forall x\in X$,%
+		\newline
+		then $(Bf)(x)\leq (Bg)(x),$ $\forall x\in X$\newline
+		
+		\item discounting: there exists some $\delta \in (0,1)$ such that 
+		\[
+		\lbrack B(f+a)](x)\leq (Bf)(x)+\delta a\text{ \ }\forall \text{ }f\in C(X),\
+		a\geq 0,\ x\in X. 
+		\]%
+	\end{enumerate}
+	
+	\noindent
+	Then, $B$ is a contraction with modulus $\delta$.
+
+\end{thm}
+
+\noindent
+Note that $a$ is a constant and $(f+a)$ is the function generated by adding $a$ to the function $f$. Blackwell's conditions are sufficient but not necessary for $B$ to be a contraction.
+
+\vspace{5mm}
+\noindent
+In this problem, we will prove these sufficient conditions.
+\begin{enumerate}[(a)]
+\item Let $d$ be the sup-metric and show that, for any $f, g \in C(X)$, we have $f(x) \leq g(x) + d(f, g)$ for all $x$.
+
+\textbf{Answer: } the sup-metric $d$ is defined as:
+\[
+d(f, g) = \sup_{x \in X} |f(x) - g(x)|.
+\]
+
+For any $x \in X$, we have:
+\[
+|f(x) - g(x)| \leq d(f, g).
+\]
+This implies:
+\[
+f(x) - g(x) \leq |f(x) - g(x)| \leq d(f, g).
+\]
+Therefore:
+\[
+f(x) \leq g(x) + d(f, g) \quad \text{for all } x \in X.
+\]
+\item Use monotonicity and discounting to show that, for any $f, g \in C(X)$, we have $(Bf)(x) \leq (Bg)(x) + \delta d(f, g)$ and $(Bg)(x) \leq (Bf)(x) + \delta d(f, g)$. 
+
+\textbf{Answer:} 
+From part (a), we have:
+\[
+f(x) \leq g(x) + d(f, g) \quad \text{for all } x \in X.
+\]
+Define $a = d(f, g) \geq 0$, so we can write:
+\[
+f \leq g + a.
+\]
+By the monotonicity of $B$, we have:
+\[
+Bf \leq B(g + a).
+\]
+By the discounting property of $B$, we have:
+\[
+B(g + a) \leq Bg + \delta a.
+\]
+Combining these inequalities:
+\[
+Bf \leq Bg + \delta a.
+\]
+Therefore:
+\[
+(Bf)(x) \leq (Bg)(x) + \delta d(f, g) \quad \text{for all } x \in X.
+\]
+The argument for 
+\[
+(Bg)(x) \leq (Bg)(x) + \delta d(f, g) \quad \text{for all } x \in X.
+\]
+Is completely analogous.
+\item Combine these to show that $d(Bf, Bg) \leq \delta d(f, g)$. 
+
+\textbf{Answer:} we have for all $x \in X$:
+\[
+(Bf)(x) \leq (Bg)(x) + \delta d(f, g),
+\]
+and
+\[
+(Bg)(x) \leq (Bf)(x) + \delta d(f, g).
+\]
+These inequalities imply:
+\[
+|(Bf)(x) - (Bg)(x)| \leq \delta d(f, g) \quad \text{for all } x \in X.
+\]
+Taking the supremum over $x \in X$, we get:
+\[
+d(Bf, Bg) = \sup_{x \in X} |(Bf)(x) - (Bg)(x)| \leq \delta d(f, g).
+\]
+Therefore, $B$ is a contraction mapping with modulus $\delta$.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 4: Example of Blackwell's Conditions}
+
+We will now work out a simple example to illustrate these sufficient conditions. In particular, consider the Bellman operator in a consumption problem with stochastic asset returns, stochastic labor income, and a liquidity constraint:
+\begin{equation*}
+	(Bf)(x)=\sup_{c\in \lbrack 0,x]}\left\{ u(c)+\delta \mathbb Ef(\tilde{R}_{+1}(x-c)+
+	\tilde{y}_{+1})\right\} \text{ \ }\forall x\text{\ } 
+\end{equation*}
+Notionally, $\tilde R$ and $\tilde y$ just underscore that these are random variables. The $_{+1}$ subscript underscores that these random variables are realized next period (in class, we used $'$ for this). The liquidity constraint is encoded in $c \in [0, x]$. (Why?)
+
+
+\vspace{5mm}
+\noindent
+\begin{enumerate}[(a)]
+\item Interpret each term in the definition of this Bellman operator.
+
+\textbf{Answer:} $u(c)$ is the immediate utility the agent derives from consuming $c$ units today. $\delta$ is the discount factor, with $0 < \delta < 1$. It reflects the agent's time preference. $\mathbb{E} \left[ f\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right]$ is the expected future value function. It is the expected value of function $f$ evaluated at next period's wealth ($\tilde{R}_{+1}(x - c) + \tilde{y}_{+1}$), considering the randomness in asset returns and labor income ($\tilde{R}_{+1}$ is the stochastic asset return in the next period, and $\tilde{y}_{+1}$ the stochastic labor income). $x$ is just current wealth (i.e. summing labor and asset income).
+
+
+\item Explicitly write out the budget constraint that is used here.
+
+\textbf{Answer:} the current Period Budget Constraint (which we can obtain from the feasible set) is:
+   \[
+   c + a_{+1} \leq x, \quad \text{with } a_{+1} \geq 0 \text{ representing the savings in period 1}.
+   \]
+Whereas the next Period Wealth Equation is:
+   \[
+   x_{+1} = \tilde{R}_{+1} a_{+1} + \tilde{y}_{+1} = \tilde{R}_{+1}(x - c) + \tilde{y}_{+1}.
+   \]
+So that:
+\[
+   a_{+2} + c_{+1} \leq \tilde{R}_{+1}(x - c) + \tilde{y}_{+1}.
+\]
+
+\item Check the first of Blackwell's conditions: monotonicity.
+
+\textbf{Answer:} assume, wlog, that $f(x) \leq g(x)$ for all $x \in X$.
+
+Consider the Bellman operator applied to $f$ and $g$:
+
+\[
+\begin{aligned}
+(Bf)(x) &= \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ f\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right] \right\}, \\
+(Bg)(x) &= \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ g\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right] \right\}.
+\end{aligned}
+\]
+
+For any feasible $c \in [0, x]$, we have:
+
+\[
+\mathbb{E} \left[ f\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right] \leq \mathbb{E} \left[ g\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right],
+\]
+
+since $f \leq g$ pointwise and expectations preserve inequalities.
+
+Therefore, for any $c \in [0, x]$:
+
+\[
+u(c) + \delta \, \mathbb{E} \left[ f\left( \cdot \right) \right] \leq u(c) + \delta \, \mathbb{E} \left[ g\left( \cdot \right) \right].
+\]
+
+Taking the supremum over $c \in [0, x]$ (and since both sides of the inequality above are strictly positive, which allows us to put an absolute value around them), we get:
+
+\[
+(Bf)(x) \leq (Bg)(x).
+\]
+
+Thus, the operator $B$ satisfies monotonicity.
+
+
+\item Check the second of Blackwell's conditions: discounting.
+
+\textbf{Answer:}  let $f \in C(X)$ and $a \geq 0$. Consider the function $f + a$.
+
+Compute $B(f + a)$:
+
+\[
+\begin{aligned}
+[B(f + a)](x) &= \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ (f + a)\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right] \right\} \\
+&= \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ f\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) + a \right] \right\} \\
+&= \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ f\left( \tilde{R}_{+1}(x - c) + \tilde{y}_{+1} \right) \right] + \delta a \right\}.
+\end{aligned}
+\]
+
+Since $\delta a$ is a constant (does not depend on $c$), we can factor it out of the supremum:
+
+\[
+[B(f + a)](x) = \left( \sup_{c \in [0, x]} \left\{ u(c) + \delta \, \mathbb{E} \left[ f\left( \cdot \right) \right] \right\} \right) + \delta a = (Bf)(x) + \delta a.
+\]
+
+Thus, we have:
+
+\[
+[B(f + a)](x) = (Bf)(x) + \delta a.
+\]
+
+Since $\delta a \geq 0$, it follows that:
+
+\[
+[B(f + a)](x) \leq (Bf)(x) + \delta a.
+\]
+
+Therefore, the operator $B$ satisfies the discounting condition with modulus $\delta$.
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 5: Neoclassical Growth Model with Log Utility}
+
+Recall the neoclassical growth model we discussed in class. Assuming log utility, full depreciation, and a decreasing-returns production function, preferences can be written as
+\begin{equation*}
+	V(k_0) = \max_{ \{ k_{t+1} \}_{t=0}^\infty} \sum_{t=0}^\infty \beta^t \log (k_t^\alpha - k_{t+1})
+\end{equation*}
+where $0 < \alpha < 1$, subject to the constraint
+\begin{equation*}
+	k_{t+1} \in [0, k_t^\alpha] \equiv \Gamma(k_t).
+\end{equation*}
+Think of $k_t^\alpha$ as the resources you have available, and so the most you would be allowed to save is $k_t^\alpha$. We represent this constraint by the \textit{feasibility set} $\Gamma(k_t)$. (This is the more general notation you will find in Stokey-Lucas, for example.)
+
+Consider the associated Bellman equation 
+\begin{equation*}
+	V(k) = \max_{k' \in \Gamma(k)} \bigg\{ \ln (k^\alpha - k') + \beta V(k') \bigg\}.
+\end{equation*}
+
+\begin{enumerate}[(a)]
+\item Try to solve the Bellman equation by \textit{guessing} a solution. Specifically, start by guessing that the form of the solution is 
+\begin{equation*}
+	V(k) = \psi + \phi \log k.
+\end{equation*}
+We will solve for the coefficients $\psi$ and $\phi$, and show that $V(k)$ solves the functional equation. Rewrite the functional equation substituting in $V(k) = \psi + \phi \log k$. Use the Envelope Theorem (ET) and the First Order Condition (FOC) to show 
+\begin{equation*}
+	\phi = \frac{\alpha}{1 - \alpha \beta}.
+\end{equation*}
+Now use the FOC to show 
+\begin{equation*}
+	k'(k) = \alpha \beta k^\alpha.
+\end{equation*}
+Finally, show that the functional equation is satisfied at all feasible values of $k_0$ if 
+\begin{equation*}
+	\psi =\frac{1}{1-\beta }\bigg[ \log (1-\alpha \beta)+\frac{\alpha \beta}{1-\alpha \beta}\log (\alpha \beta )\bigg] .
+\end{equation*}
+You have now solved the functional equation by using the guess and verify method.
+
+\textbf{Answer:} Substituting our guess in, 
+\[
+\psi + \phi \ln k = \beta \psi + \max_{k' \in [0, k^\alpha]} \left\{ \ln (k^\alpha - k') + \beta \phi \ln k' \right\}.
+\]
+Subtract $\beta \psi$ from both sides:
+\[
+\psi - \beta \psi + \phi \ln k = \max_{k' \in [0, k^\alpha]} \left\{ \ln (k^\alpha - k') + \beta \phi \ln k' \right\}.
+\]
+Define the Lagrangian for the right-hand side:
+\[
+\mathcal{L}(k', \lambda, \mu) = \ln(k^\alpha - k') + \beta \phi \ln k' + \lambda(k' - k^\alpha) + \mu(-k').
+\]
+We know the constraints will not be binding for $\beta>0$ since the marginal utility of consumption goes to infinity as consumption goes to 0. We thus have:
+\[
+\mathcal{L}(k') = \ln (k^\alpha - k') + \beta \phi \ln k'.
+\]
+By the envelope theorem,
+\[
+\frac{dV(k)}{dk} = \frac{\partial L(k')}{\partial k} \bigg|_{k' = k'^*}.
+\]
+\[
+V(k) = \psi + \phi \ln k \implies \frac{dV(k)}{dk} = \frac{\phi}{k} = \frac{\alpha k^{\alpha - 1}}{k^\alpha - k'} = \frac{\partial L(k')}{\partial k} \bigg|_{k' = k'^*}
+\]
+We can find the first-order condition (FOC) by taking the derivative of $\mathcal{L}(k')$ with respect to $k'$:
+\[
+\frac{dL}{dk'} = -\frac{1}{k^\alpha - k'} + \frac{\beta \phi}{k'} = 0.
+\]
+Which implies: \[
+k' = \frac{\beta \phi}{1 + \beta \phi} k^\alpha.
+\] 
+Therefore: 
+\[
+\phi = \frac{k^\alpha}{k^\alpha - \beta \phi k^\alpha / (1+ \beta \phi)} = \frac{\alpha}{1+ \beta \phi - \beta \phi}
+\]
+
+\[
+(1- \beta \alpha) \phi = \alpha
+\Rightarrow \phi = \frac{\alpha}{1- \beta \alpha}
+\]
+Together with:
+\[
+k' = \frac{\beta \phi}{1 + \beta \phi} k^\alpha.
+\] 
+We can just plug in $\phi$ and find that:
+\[
+k' = \alpha \beta k^\alpha.
+\]
+From the equation above: 
+\[
+\psi - \beta \psi + \phi \ln k = \max_{k' \in [0, k^\alpha]} \left\{ \ln (k^\alpha - k') + \beta \phi \ln k' \right\}.
+\]
+We can plug in for $k'$:
+\[
+\psi - \beta \psi + \phi \ln k = \max_{k' \in [0, k^\alpha]} \left\{ \ln (k^\alpha - \alpha \beta k^\alpha) + \beta \phi \ln \alpha \beta k^\alpha \right\} =\ln (k^\alpha - \alpha \beta k^\alpha) + \beta \phi \ln \alpha \beta k^\alpha.
+\]
+So that:
+\[
+\psi - \beta \psi + \phi \ln k = \ln(1 - \alpha \beta) + \alpha \ln k + \beta \phi \left( \ln(\alpha \beta) + \alpha \ln k \right).
+\]
+
+Simplify:
+\[
+\psi - \beta \psi + \phi \ln k = \ln(1 - \alpha \beta) + \alpha \ln k + \beta \phi \ln(\alpha \beta) + \beta \phi \alpha \ln k.
+\]
+Noting that: 
+\(
+\phi = \alpha + \beta\alpha\phi
+\)
+ the above becomes:
+\[
+\psi - \beta \psi = \ln(1 - \alpha \beta) + \beta \phi \ln(\alpha \beta)
+\]
+And finally, plugging in for $\phi$ and dividing both sides by $(1-\beta)$,
+\[
+\psi = \frac{1}{1 - \beta} \left[ \ln(1 - \alpha \beta) + \frac{\alpha \beta}{1 - \alpha \beta} \ln(\alpha \beta) \right].
+\]
+
+\item We have derived the policy function
+\begin{equation*}
+	k'(k) = g(k) = \alpha \beta k^\alpha.
+\end{equation*}
+Derive the optimal sequence of state variables $\{k_t^*\}_{t=0}^\infty$ which would be generated by this policy function. Show that 
+\begin{equation*}
+	V(k_0) = \sum_{t=0}^\infty \beta^t \log \bigg( (k_t^*)^\alpha - k_{t+1}^* \bigg),
+\end{equation*}
+thereby confirming that this policy function is optimal.
+
+\textbf{Answer: } 
+Starting from $k_0$, we have:
+\[
+\begin{aligned}
+k_1^* &= \alpha \beta (k_0)^\alpha, \\
+k_2^* &= \alpha \beta (k_1^*)^\alpha = \alpha \beta \left( \alpha \beta (k_0)^\alpha \right)^\alpha = \alpha \beta (\alpha \beta)^\alpha (k_0)^{\alpha^2}, \\
+k_3^* &= \alpha \beta (\alpha \beta)^{\alpha} (\alpha \beta)^{\alpha^2} (k_0)^{\alpha^3} = \alpha \beta (\alpha \beta)^{\alpha + \alpha^2} (k_0)^{\alpha^3}, \\
+\vdots \\
+k_t^* &= (\alpha \beta)^{S_t} (k_0)^{\alpha^t},
+\end{aligned}
+\]
+where $S_t = 1 + \alpha + \alpha^2 + \dots + \alpha^{t-1}$.
+\[
+\sum \beta^t \log((k_t)^\alpha - k_{t+1})
+\]
+
+\[
+= \sum \beta^t \log \left( k_t^\alpha - \alpha \beta k_t^\alpha \right)
+\]
+
+\[
+= \sum \beta^t \log \left( k_t^\alpha \right) + \sum \beta^t \log (1 - \alpha \beta)
+\]
+
+\[
+= \sum \beta^t \alpha \log k_t + \sum \beta^t \log (1 - \alpha \beta)
+\]
+
+Substituting with the generic formula for $k_t^*$ we obtained beforehand,
+\[
+= \sum \beta^t \alpha \alpha^t \log k_0 + \sum \beta^t  \alpha S_t \log \alpha \beta + \frac{1}{1-\beta} \log (1 - \alpha \beta) 
+\]
+
+We have that 
+\[
+\sum \beta^t \alpha \alpha^t \log k_0=  \frac{\alpha}{1 - \alpha \beta} k_0
+\]
+
+Furthermore, since \( S_t = \frac{1 - \alpha^t}{1 - \alpha} \),
+
+\[
+\sum \beta^t \alpha \left( S_t \log (\alpha \beta) \right) = \frac{\alpha \ln \alpha \beta}{1 - \alpha} \sum \left( \beta^t - \beta^t \alpha^t \right) = \frac{\alpha \ln \alpha \beta}{1 - \alpha} \left( \frac{1}{1 - \alpha} - \frac{1}{1 - \alpha \beta} \right)
+\]
+
+\[
+= \ln \alpha \left( \frac{1 - \alpha \beta - 1 + \beta}{(1 - \alpha)(1 - \beta)(1 - \alpha \beta)} \right)
+\]
+
+\[
+= \frac{1}{1 - \beta} \frac{\beta \alpha}{1 - \alpha \beta} \ln \alpha \beta
+\]
+
+\[
+\Rightarrow V(k_0) = \frac{1}{1 - \beta} \left( \log (1 - \alpha \beta) + \frac{\beta \alpha}{1 - \alpha \beta} \ln \alpha \beta \right) +  \frac{\alpha}{1 - \alpha \beta} k_0
+\]
+
+
+
+\item Consider the Bellman (functional) operator $B$ defined by
+\begin{equation*}
+	(B f)(k) = \sup_{k' \in \Gamma(k)} \Big\{ \log (k^\alpha - k') + \beta f(k') \Big\}.
+\end{equation*}
+Let $\hat V(k) = \frac{\alpha \log k}{1 - \alpha \beta}$. Show that
+\begin{equation*}
+	(B^n \hat V)(k) = \frac{1-\beta^n}{1-\beta} \bigg[\log (1-\alpha \beta) + \frac{\alpha \beta}{1 - \alpha \beta} \log (\alpha \beta) \bigg] + \frac{\alpha \log k}{1 - \alpha \beta}.
+\end{equation*}
+To prove this you'll need to show that $k' = \alpha \beta k^\alpha$, and substitute this expression into the functional operator. Let,
+\begin{equation*}
+	\lim_{n \rightarrow \infty} (B^n \hat V)(k) = V(k)
+\end{equation*}
+Confirm that $V(k)$ is the same solution to the the functional equation that you derived in part (a). You have now solved the functional equation by iterating the operator $T$ on a starting guess.
+
+\textbf{Answer:} 
+Plugging in the guess into the Bellman operator, $(B \hat{V})(k)$:
+\[
+(B \hat{V})(k) = \sup_{k' \in [0, k^\alpha]} \left\{ \ln (k^\alpha - k') + \beta \left( \frac{\alpha \ln k'}{1 - \alpha \beta} \right) \right\}.
+\]
+Define the objective function:
+\[
+L(k') = \ln (k^\alpha - k') + \frac{\beta \alpha}{1 - \alpha \beta} \ln k'.
+\]
+The FOC is:
+\[
+\frac{dL}{dk'} = -\frac{1}{k^\alpha - k'} + \frac{\beta \alpha}{(1 - \alpha \beta) k'} = 0.
+\]
+\[
+\frac{\beta \alpha}{(1 - \alpha \beta) k'} = \frac{1}{k^\alpha - k'}.
+\]
+\[
+\beta \alpha k^\alpha - \beta \alpha k' = k' - \alpha \beta k'.
+\]
+\[
+\beta \alpha k^\alpha = k' - \beta \alpha k' + \beta \alpha k'.
+\]
+\[
+\beta \alpha k^\alpha = k'.
+\]
+
+Therefore:
+\[
+k' = \alpha \beta k^\alpha.
+\]
+
+Substitute $k' = \alpha \beta k^\alpha$ into $(B \hat{V})(k)$:
+\[
+(B \hat{V})(k) = \ln \left( (1 - \alpha \beta) k^\alpha \right) + \beta \left( \frac{\alpha \ln (\alpha \beta k^\alpha)}{1 - \alpha \beta} \right).
+\]
+
+\[
+(B \hat{V})(k) = \ln(1 - \alpha \beta) + \alpha \ln k + \frac{\beta \alpha}{1 - \alpha \beta} \left( \ln (\alpha \beta) + \alpha \ln k \right).
+\]
+
+\[
+(B \hat{V})(k) = \ln(1 - \alpha \beta) + \alpha \ln k + \frac{\beta \alpha \ln (\alpha \beta)}{1 - \alpha \beta} + \frac{\beta \alpha^2 \ln k}{1 - \alpha \beta}.
+\]
+
+Combining like terms:
+\[
+(B \hat{V})(k) = \left[ \ln(1 - \alpha \beta) + \frac{\beta \alpha \ln (\alpha \beta)}{1 - \alpha \beta} \right] + \left[ \alpha + \frac{\beta \alpha^2}{1 - \alpha \beta} \right] \ln k.
+\]
+
+Note that:
+\[
+\alpha + \frac{\beta \alpha^2}{1 - \alpha \beta} = \frac{\alpha (1 - \alpha \beta) + \beta \alpha^2}{1 - \alpha \beta} = \frac{\alpha - \alpha^2 \beta + \beta \alpha^2}{1 - \alpha \beta} = \frac{\alpha}{1 - \alpha \beta}.
+\]
+
+Thus:
+\[
+(B \hat{V})(k) = C + \phi \ln k,
+\]
+where:
+\[
+C = \ln(1 - \alpha \beta) + \frac{\beta \alpha \ln (\alpha \beta)}{1 - \alpha \beta}, \quad \phi = \frac{\alpha}{1 - \alpha \beta}.
+\]
+Importantly, note that $\phi \ln k$ is exactly our first guess for the value function. If we iterate:
+\[
+(B^2 f)(k) = \sup_{k' \in \Gamma(k)} \left\{ \ln (k^\alpha - k') + \beta C + \beta\phi \ln k' \right\}.
+\]
+Since $\beta C$ does not depend on $k'$, we can pull it out of the sup. The rest we have already solved above, noting again that $\phi \ln k$ is exactly our first guess for the value function. Therefore, applying the operator $n$ times yields:
+\[
+(B^n \hat{V})(k) = \left( \sum_{t=0}^{n-1} \beta^t C \right) + \phi \ln k = \frac{1 - \beta^n}{1 - \beta} C + \phi \ln k.
+\]
+
+
+Substitute $C$ and $\phi$:
+\[
+(B^n \hat{V})(k) = \frac{1 - \beta^n}{1 - \beta} \left[ \ln(1 - \alpha \beta) + \frac{\beta \alpha \ln (\alpha \beta)}{1 - \alpha \beta} \right] + \frac{\alpha \ln k}{1 - \alpha \beta}.
+\]
+
+Since $\beta^n \to 0$ as $n \to \infty$:
+\[
+\lim_{n \to \infty} (B^n \hat{V})(k) = \frac{1}{1 - \beta} \left[ \ln(1 - \alpha \beta) + \frac{\beta \alpha \ln (\alpha \beta)}{1 - \alpha \beta} \right] + \frac{\alpha \ln k}{1 - \alpha \beta}.
+\]
+
+Thus, $\lim_{n \to \infty} (B^n \hat{V})(k) = V(k)$.
+
+
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{10mm}
+\section*{Problem 6: A Model with Equity}
+
+\vspace{5mm}
+\noindent
+Assume that a consumer with only equity wealth must choose period by period consumption in a discrete-time dynamic optimization problem. Specifically, consider the sequence problem
+\begin{equation*}
+	V(x_0) = \max_{ \{ c_t \}_{t=0}^\infty } \mathbb E_0 \sum_{t=0}^\infty e^{- \rho t} u(c_t)
+\end{equation*}
+subject to the constraints
+\begin{equation*}
+	x_{t+1} = e^{r + \sigma u_t - \frac{\sigma^2}{2}} (x_t - c_t)
+\end{equation*}
+where $u_t$ is iid and $u_t \sim \mathcal N(0, 1)$. There is a feasibility constraint $c_t \in [0, x_t]$. And we assume an endowment $x_0 > 0$. Here, $x_t$ represents equity wealth at period $t$ and $c_t$ is consumption in period $t$. The consumer has discount rate $\rho$. The consumer can only invest in a risky asset with expected return $e^r = \mathbb E e^{r + \sigma u_t - \frac{\sigma^2}{2}}$. And we assume CRRA preferences with $u(c) = \frac{1}{1-\gamma} c^{1-\gamma}$, with $\gamma \in [0, \infty]$. We call this \textit{constant} relative risk aversion because the relative risk aversion coefficient
+\begin{equation*}
+	- \frac{c u''(c)}{u'(c)} = \gamma
+\end{equation*}
+is constant. Notice that CRRA consumption preferences are \textit{homothetic}, and this is what allows us to analytically solve this problem. 
+
+The associated Bellman equation is 
+\begin{equation*}
+	V(x) = \max_{x' \in [0, x]} \bigg\{ u(x - x') + \mathbb E e^{- \rho} V \bigg( e^{r + \sigma u - \frac{\sigma^2}{2}} x' \bigg) \bigg\}.
+\end{equation*}
+
+
+\begin{enumerate}[(a)]
+\item Explain all terms in this Bellman equation. Why is $u$ not a state variable, i.e., why don't we have $V(x, u)$? Make sure that this equation makes sense to you.
+
+\textbf{Answer:} \(V(x)\) is the value function representing the maximum expected utility attainable starting from current wealth \(x\). The choice of next period's investment \(x'\), which must be between 0 and current wealth \(x\). \(u(x - x')\) is the instantaneous utility derived from consuming \(c = x - x'\) today. \(\mathbb{E} \, e^{-\rho} V\left(e^{r + \sigma u - \frac{\sigma^2}{2}} x'\right)\) is the expected discounted utility of future consumption. The term \(e^{r + \sigma u - \frac{\sigma^2}{2}} x'\) represents the stochastic next period's wealth, accounting for both the expected return \(r\) and the random shock \(\sigma u\), with \(u_t \sim \mathcal{N}(0, 1)\).
+
+The variable \(u\) represents an independent and identically distributed (i.i.d.) random shock affecting the return on the risky asset between periods \(t\) and \(t+1\). \(u_t\) is realized after the decision at time \(t\) and therefore does not carry over information to future periods (i.e., it does not affect the state beyond \(t+1\)), it is not part of the state variables in the Bellman equation. That is, choices are independent of the specific (eventual) realization of \(u_t\).
+
+\item Now guess that the value function takes the special form
+\begin{equation*}
+	V(x) = \phi \frac{x^{1-\gamma}}{1-\gamma} .
+\end{equation*}
+Note the close similarity between this functional form and the functional form of the utility function. Assuming that the value function guess is correct, use the Envelope Theorem to derive the consumption function:
+\begin{equation*}
+c=\phi^{-\frac{1}{\gamma}} x .
+\end{equation*}
+Now verify that the Bellman Equation is satisfied for a particular value of $\phi$. Do not solve for $\phi$ (it's a very nasty expression). Instead, show that
+\begin{equation*}
+	\log (1 - \phi^{-\frac{1}{\gamma}}) = \frac{1}{\gamma} \Big[ (1-\gamma) r - \rho \Big] + \frac{1}{2}(\gamma-1) \sigma^2.
+\end{equation*}
+
+\textbf{Answer:}  given the value function guess:
+\[
+V(x) = \phi \frac{x^{1 - \gamma}}{1 - \gamma},
+\]
+We have that, by the envelope theorem, $$(x-x')^{-\gamma} = \frac{dV(x')}{dx'} = \phi x ^{-\gamma}$$
+Which, by noting $c=x-x'$, yields: 
+\begin{equation*}
+c=\phi^{-\frac{1}{\gamma}} x .
+\end{equation*}
+
+Now, to verify that the Bellman equation is satisfied for a particular value of \( \phi \), we substitute the value function and the optimal consumption back into the Bellman equation:
+\[
+V(x) = \max_{x'} \left\{ u(x - x') + e^{-\rho} \mathbb{E} V\left( e^{r + \sigma u - \frac{\sigma^2}{2}} x' \right) \right\}.
+\]
+Substituting \( c = x - x' \) and \( x' = x - c \), and using \( c = \phi^{-\frac{1}{\gamma}} x \), we get:
+\[
+x' = x - c = x - \phi^{-\frac{1}{\gamma}} x = x (1 - \phi^{-\frac{1}{\gamma}}).
+\]
+Note that \( u(c) \):
+\[
+u(c) = \frac{c^{1 - \gamma}}{1 - \gamma} = \frac{(\phi^{-\frac{1}{\gamma}} x)^{1 - \gamma}}{1 - \gamma} = \phi^{-\frac{1 - \gamma}{\gamma}} \frac{x^{1 - \gamma}}{1 - \gamma}.
+\]
+Using our guess for the value function, substituting \( x' = x (1 - \phi^{-\frac{1}{\gamma}}) \) into the Bellman equation,  and simplifying:
+\[
+\mathbb{E} V(x_{t+1}) = \mathbb{E} \left[ \phi \frac{\left( e^{r + \sigma u - \frac{\sigma^2}{2}} x' \right)^{1 - \gamma}}{1 - \gamma} \right] = \phi \frac{(x')^{1 - \gamma}}{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2},
+\]
+\[
+\mathbb{E} V(x_{t+1}) = \phi \frac{\left( x (1 - \phi^{-\frac{1}{\gamma}}) \right)^{1 - \gamma}}{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2}.
+\]
+where we used the fact that \( \mathbb{E}[e^{(1 - \gamma) \sigma u}] = e^{\frac{(1 - \gamma)^2 \sigma^2}{2}} \) due to the properties of the lognormal distribution.\\
+Combining everything, we have:
+\[
+\phi \frac{x^{1 - \gamma}}{1 - \gamma} = \phi^{-\frac{1 - \gamma}{\gamma}} \frac{x^{1 - \gamma}}{1 - \gamma} + e^{-\rho} \phi \frac{\left( x (1 - \phi^{-\frac{1}{\gamma}}) \right)^{1 - \gamma}}{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2}.
+\]
+Divide both sides by \( \frac{x^{1 - \gamma}}{1 - \gamma} \):
+\[
+\phi = \phi^{-\frac{1 - \gamma}{\gamma}} + e^{-\rho} \phi \left( 1 - \phi^{-\frac{1}{\gamma}} \right)^{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2}.
+\]
+Subtract \( \phi^{-\frac{1 - \gamma}{\gamma}} \) from both sides:
+\[
+\phi - \phi^{-\frac{1 - \gamma}{\gamma}} = e^{-\rho} \phi \left( 1 - \phi^{-\frac{1}{\gamma}} \right)^{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2}.
+\]
+Divide through by $\phi$:
+\[
+1 - \phi^{-\frac{1}{\gamma}} = e^{-\rho} \left( 1 - \phi^{-\frac{1}{\gamma}} \right)^{1 - \gamma} e^{(1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2}.
+\]
+Take logs:
+\[
+\log \left( 1 - \phi^{-\frac{1}{\gamma}} \right)  = (1-\gamma) \log \left( 1 - \phi^{-\frac{1}{\gamma}} \right) -\rho + (1 - \gamma) r - \frac{\gamma (1 - \gamma)}{2} \sigma^2.
+\]
+So that:
+\[
+\log \left( 1 - \phi^{-\frac{1}{\gamma}} \right) = \frac{1}{\gamma} \left[ (1 - \gamma) r - \rho \right] + \frac{1}{2} (\gamma - 1) \sigma^2.
+\]
+
+\item Now consider the $\log$ of the ratio of $c_{t+1}$ and $c_t$. Show that
+\begin{equation*}
+	\mathbb E \log \bigg(\frac{c_{t+1}}{c_t}\bigg) = \frac{1}{\gamma}(r-\rho) + \frac{\gamma}{2} \sigma^2 - \sigma^2.
+\end{equation*}
+\textbf{Answer: } given the consumption function \(c_t = \phi^{-1/\gamma} x_t\), and the wealth transition equation \(x_{t+1} = e^{r + \sigma u_t - \frac{\sigma^2}{2}} (x_t - c_t)\), the ratio of consumptions is:
+\[
+\frac{c_{t+1}}{c_t} = \frac{\phi^{-1/\gamma} x_{t+1}}{\phi^{-1/\gamma} x_t} = \frac{x_{t+1}}{x_t} = e^{r + \sigma u_t - \frac{\sigma^2}{2}} (1 - \phi^{-1/\gamma}).
+\]
+
+Taking logarithms and computing the expected value:
+\[
+\mathbb{E} \left[ \ln\left( \frac{c_{t+1}}{c_t} \right) \right] = r - \frac{\sigma^2}{2} + \ln(1 - \phi^{-1/\gamma}).
+\]
+
+Using the previously derived expression for \(\ln(1 - \phi^{-1/\gamma})\), we simplify to:
+\[
+\mathbb{E} \left[ \ln\left( \frac{c_{t+1}}{c_t} \right) \right] = \frac{1}{\gamma}(r - \rho) + \frac{\gamma}{2} \sigma^2 - \sigma^2.
+\]
+
+
+\item Interpret the previous equation for the certainty case $\sigma = 0$. Note that $\log (\frac{c_{t+1}}{c_t}) = \log c_{t+1} - \log c_t$ is the growth rate of consumption. Explain why $\log c_{t+1} - \log c_t$ increases in $r$ and decreases in $\rho$. Why does the coefficient of relative risk aversion $\gamma$ appear in the denominator of the expression? Why does the coefficient of relative risk aversion regulate the consumer's willingness to substitute consumption between periods?
+
+\textbf{Answer:} In the certainty case (\(\sigma = 0\)), the equation simplifies to:
+\[
+\ln\left( \frac{c_{t+1}}{c_t} \right) = \frac{1}{\gamma} (r - \rho).
+\]
+A higher expected return \(r\) increases the growth rate of consumption. This is because higher returns on investment allow the consumer to afford relatively higher future consumption. Meanwhile, a higher discount rate \(\rho\) (more impatience) decreases the growth rate of consumption. The consumer prefers present consumption over future consumption, leading to slower growth in consumption (note that growth in consumption implies a reallocation of current to future consumption). The coefficient of relative risk aversion \(\gamma\) appears in the denominator, reflecting its role in the intertemporal elasticity of substitution (IES), which is \(1/\gamma\) for CRRA utility. A higher \(\gamma\) means the consumer is less willing to substitute consumption across time (lower IES), leading to a smaller response of consumption growth to changes in \(r\) and \(\rho\). Intuitively, $\gamma$ regulates the concavity of the utility function and thus imposes a need to smooth consumption beyond returns and discounting, which trumps the other two factors and minimizes variation over the consumption path. 
+
+
+\end{enumerate}
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
