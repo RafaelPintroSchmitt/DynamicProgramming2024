@@ -1,0 +1,990 @@
+\documentclass[11pt]{extarticle}
+\usepackage{fullpage,amsmath,amsfonts,microtype,nicefrac,amssymb, amsthm}
+\usepackage[left=1in, bottom=1in, top=1in, right = 1in]{geometry}
+\usepackage{textcomp}
+\usepackage{mathpazo}
+\usepackage{mathrsfs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+
+\usepackage{microtype}
+
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{ragged2e}
+
+\setlength{\parindent}{24pt}
+\setlength{\jot}{8pt}
+
+
+\usepackage[shortlabels]{enumitem}
+
+
+%% FOOTNOTES
+\usepackage[bottom]{footmisc}
+\usepackage{footnotebackref}
+
+
+%% FIGURE ENVIRONMENT
+%\graphicspath{{}}
+\usepackage[margin=15pt, font=small, labelfont={bf}, labelsep=period]{caption}
+\usepackage{subcaption}
+\captionsetup[figure]{name={Figure}, position=above}
+\usepackage{float}
+\usepackage{epstopdf}
+
+
+%% NEW COMMANDS
+\renewcommand{\baselinestretch}{1.25} 
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\indep}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+\renewcommand{\b}{\begin}
+\newcommand{\e}{\end}
+
+%% NEWTHEOREM
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{ex}[thm]{Example}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{cor}[thm]{Corollary}
+
+%% LINKS and COLORS
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\definecolor{myred}{RGB}{163, 32, 45}
+\hypersetup{
+	%backref=true,
+	%pagebackref=true,
+	colorlinks=true,
+	urlcolor=myred,
+	citecolor=myred, 
+	linktoc=all,     
+	linkcolor=myred,
+}
+
+%% TABLE OF CONTENTS
+\addto\captionsenglish{
+	\renewcommand{\contentsname}
+	{}% This removes the heading over the table of contents.
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%            END PREAMBLE           %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{202A: Dynamic Programming and Applications\\[5pt] {\Large \textbf{Homework \#2}}}
+
+\author{Rafael Pintro Schmitt}
+
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 1: Optimal Stopping}
+
+Consider the optimal stopping application from class: Each period $t = 0, 1, \ldots$ the consumer draws a job offer from a uniform distribution with support in the unit interval: $x \sim \text{unif}[0, 1]$. The consumer can either accept the offer and realize net present value $x$, or the consumer can wait another period and draw again. Once you accept an offer the game ends. Waiting to accept an offer is costly because the value of the remaining offers declines at rate $\rho = - \log(\beta)$ between periods. The Bellman equation for this problem is:
+\begin{equation*}
+	V(x) = \max \bigg\{ x, \; \beta \mathbb E V(x') \bigg\}
+\end{equation*}
+where $x'$ is your next draw, which is a random variable.
+
+
+\vspace{2mm}
+\begin{enumerate}[(a)]
+\item Explain the intuition behind this Bellman equation. Explain every term.
+
+\textbf{Answer:} the Bellman equation determines the present value of an alternative $x$ by assigning to it the maximum between the alternative value itself (which is the value one gets if they decide to accept the offer) and a discounted expected future value of the continuation game, i.e. $\beta \mathbb E V(x')$. This discounted expected value includes a discount factor, $\beta$, which captures the cost of waiting for an offer in the next period, and the expected value of drawing from the distribution of $x$ again, and potentially waiting for extra turns until finally accepting some offer.
+\item Briefly describe one decision problem you have faced in your own life that could be modeled using the above Bellman equation. 
+
+\textbf{Answer:} when I was shopping for a computer this year, I was torn between waiting for the latest generation of Intel/AMD processors, which I knew would be released later in the year, and buying a laptop that I felt was enough for my needs before. The process of waiting for laptops to be released as your old laptop gets worse is well captured by the generic stopping problem described here.
+
+\item Consider the associated functional operator:
+\begin{equation*}
+	(Bw)(x) = \max \bigg\{ x, \; \beta \mathbb E w(x') \bigg\}
+\end{equation*}
+for all $x$. Using Blackwell's conditions, show that this Bellman operator is a contraction mapping.
+
+\textbf{Answer:} Assume \( f, g \in C(X) \) such that \( f(x) \leq g(x) \) for all \( x \in [0, 1] \). We need to show that:
+\[
+(Bf)(x) \leq (Bg)(x), \quad \forall x \in [0, 1].
+\]
+For any \( x \in [0, 1] \):
+\[
+(Bf)(x) = \max \left\{ x, \; \beta \, \mathbb{E} \left[ f(x') \right] \right\},
+\]
+\[
+(Bg)(x) = \max \left\{ x, \; \beta \, \mathbb{E} \left[ g(x') \right] \right\}.
+\]
+
+Since \( f(x') \leq g(x') \) for all \( x' \in [0,1] \), and the expectation operator \( \mathbb{E} \) preserves the inequality, we have:
+\[
+\mathbb{E} \left[ f(x') \right] \leq \mathbb{E} \left[ g(x') \right].
+\]
+\[
+\beta \, \mathbb{E} \left[ f(x') \right] \leq \beta \, \mathbb{E} \left[ g(x') \right].
+\]
+
+Now, consider the two possible cases for \( (Bf)(x) \) and \( (Bg)(x) \):
+
+1. If \( x \geq \beta \, \mathbb{E} \left[ f(x') \right] \), then:
+   \[
+   (Bf)(x) = x \leq x = (Bg)(x) \quad \text{since } x \geq \beta \, \mathbb{E} \left[ f(x') \right] \leq \beta \, \mathbb{E} \left[ g(x') \right].
+   \]
+
+2. If \( x \leq \beta \, \mathbb{E} \left[ f(x') \right] \), then:
+   \[
+   (Bf)(x) = \beta \, \mathbb{E} \left[ f(x') \right] \leq \beta \, \mathbb{E} \left[ g(x') \right] = (Bg)(x).
+   \]
+
+In both cases, we have \( (Bf)(x) \leq (Bg)(x) \). \( B \) is monotonic.\\
+For discounting, We need to show that there exists \( \delta \in (0,1) \) such that for all \( f \in C(X) \), \( a \geq 0 \), and all \( x \in [0,1] \):
+\[
+[B(f + a)](x) \leq (Bf)(x) + \delta a.
+\]
+
+Let’s choose \( \delta = \beta \), where \( 0 < \beta < 1 \).
+\[
+[B(f + a)](x) = \max \left\{ x, \; \beta \, \mathbb{E} \left[ f(x') + a \right] \right\} = \max \left\{ x, \; \beta \, \mathbb{E} \left[ f(x') \right] + \beta a \right\}.
+\]
+
+We also have that:
+
+\[
+(Bf)(x) + \beta a = \max \left\{ x, \; \beta \, \mathbb{E} \left[ f(x') \right] \right\} + \beta a.
+\]
+
+So that clearly \[
+[B(f + a)](x) \leq (Bf)(x) + \delta a.
+\]
+With a strict inequality whenever $x > \beta \, \mathbb{E} \left[ f(x') \right] $.
+
+
+\item What does the contraction mapping property imply about $\lim_{n \to \infty} B^n w$, where $w$ is \textit{any} arbitrary function? 
+
+\textbf{Answer:} The contraction mapping property of the Bellman operator \( B \) implies that, for any arbitrary function \( w \), the sequence \( \{ B^n w \} \) converges uniformly to a unique fixed point \( V \) in the space of bounded continuous functions. That is,
+
+\[
+\lim_{n \to \infty} B^n w = V,
+\]
+
+where \( V \) satisfies the Bellman equation:
+
+\[
+V(x) = \max \left\{ x, \; \beta \mathbb{E} \left[ V(x') \right] \right\}, \quad \forall x \in [0, 1].
+\]
+
+This convergence is guaranteed by the Banach Fixed Point Theorem due to the contraction mapping property of \( B \).
+
+\item Suppose we make a (bad?) guess $w(x) = 1$ for all $x$. Analytically iterate on $B^n w$ and show that 
+\begin{equation*}
+	\lim_{n \to \infty} (B^n w) (x) = V(x) = \begin{cases}
+		x^* & \text { if } x \leq x^* \\
+		x & \text { if } x > x^*
+	\end{cases}
+\end{equation*}
+where
+\begin{equation*}
+	x^* = e^\rho \bigg( 1 - \Big[ 1 - e^{- 2 \rho} \Big]^\frac{1}{2} \bigg).
+\end{equation*}
+
+\textbf{Answer:} compute \( w_1(x) = (B w_0)(x) \):
+
+\[
+w_1(x) = \max \left\{ x, \; \beta \mathbb{E}[w_0(x')] \right\}.
+\]
+
+Since \( w_0(x') = 1 \), we have \( \mathbb{E}[w_0(x')] = 1 \). Therefore,
+
+\[
+w_1(x) = \max \left\{ x, \; \beta \right\}.
+\]
+
+Thus,
+
+\[
+w_1(x) = \begin{cases}
+\beta & \text{if } x \leq \beta, \\
+x & \text{if } x > \beta.
+\end{cases}
+\]
+
+\( w_2(x) = (B w_1)(x) \):
+
+\[
+w_2(x) = \max \left\{ x, \; \beta \mathbb{E}[w_1(x')] \right\}.
+\]
+
+Calculate \( \mathbb{E}[w_1(x')] \):
+
+\[
+\mathbb{E}[w_1(x')] = \int_{0}^{1} w_1(x') \, dx' = \int_{0}^{\beta} \beta \, dx' + \int_{\beta}^{1} x' \, dx' = \beta^2 + \frac{1 - \beta^2}{2} = \frac{1 + \beta^2}{2}.
+\]
+
+Therefore,
+
+\[
+w_2(x) = \max \left\{ x, \; \beta \left( \frac{1 + \beta^2}{2} \right) \right\}.
+\]
+
+By continuing this process, we observe that each iteration updates \( w_n(x) \) as:
+
+\[
+w_n(x) = \max \left\{ x, \; k_n \right\},
+\]
+
+where \( k_n = \beta \mathbb{E}[w_{n-1}(x')] \) and \( k_n \) decreases with each iteration. As \( n \to \infty \), \( k_n \) converges to a threshold \( x^* \), and \( w_n(x) \) converges to:
+
+\[
+V(x) = \begin{cases}
+x^* & \text{if } x \leq x^*, \\
+x & \text{if } x > x^*.
+\end{cases}
+\]
+
+At \( x = x^* \), the Bellman equation becomes:
+
+\[
+x^* = \beta \mathbb{E}[V(x')] = \beta \left( \int_{0}^{x^*} x^* \, dx' + \int_{x^*}^{1} x' \, dx' \right) = \beta \left( x^* \cdot x^* + \frac{1 - (x^*)^2}{2} \right).
+\]
+\[
+x^* = \beta \left( (x^*)^2 + \frac{1 - (x^*)^2}{2} \right) = \beta \left( \frac{1 + (x^*)^2}{2} \right).
+\]
+\[
+2 x^* = \beta \left( 1 + (x^*)^2 \right).
+\]
+
+This leads to the quadratic equation:
+
+\[
+\beta (x^*)^2 - 2 x^* + \beta = 0.
+\]
+
+Solving for \( x^* \):
+
+\[
+x^* = \frac{1 - \sqrt{1 - \beta^2}}{\beta}.
+\]
+
+Given that $\beta=e^{-\rho}$
+\[
+x^* = \frac{1 - \sqrt{1 - e^{-2\rho}}}{e^{-\rho}} = e^\rho \left( 1 - \sqrt{1 - e^{-2\rho}} \right).
+\]
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 2: Optimal Project Completion}
+
+Every period you draw a cost $c$ distributed uniformly between $0$ and $1$ for completing a project. If you undertake the project, you pay $c$, and complete the project with probability $1-p$. Each period in which the project remains uncompleted, you pay a late fee of $l$. The game continues until you complete the project.
+
+
+\vspace{2mm}
+\begin{enumerate}[(a)]
+\item Write down the Bellman Equation assuming no discounting. Why is it ok to assume no discounting in this problem?
+
+\textbf{Answer:} 
+Let \( V \) denote the minimal expected total cost of completing the project starting from the current period when the project is uncompleted. At each period, the agent faces a choice:
+
+1. Delay Undertaking the Project, which entails a total immediate cost: \( l + V \)  (late fee plus continuation cost).
+
+2. Undertake the Project: pay $c$. With probability \( p \), the project remains uncompleted, leading to a \( l + V \) cost as before. However, with probability \( 1- p \), the game ends and there are no further costs.
+\[
+V(c) = \min \left\{ l + \mathbb{E}_c \left[ V(c') \right], \; c + p (l+\mathbb{E}_c \left[ V(c') \right])  \right\}.
+\]
+
+It is acceptable to assume no discounting in this problem because (1) from a modeling perspective the agent may not care about the project itself, and so the only cost of postponing is some external penalty. This game would be equivalent to a game with discounting and exponentially increasing fees. Thus the setting here, although simplified, can capture some interesting features of reality (2) from a mathematical perspective, the late fee plays a similar role as the discount factor, adding costs (reducing benefits) as time passes and thus making the problem well behaved (no postponing forever, etc).
+
+\item Derive the optimal threshold: $c^* = \sqrt{2l}$. Explain intuitively, why this threshold does not depend on the probability of failing to complete the project, $p$. 
+
+\textbf{Answer:} analogously to the previous question, in this problem the agent will take on the project if $c<c^*$ for some $c^*$. and delay otherwise. At $c=c^*$, the two terms inside the min should be equal.
+$$l + \mathbb{E}_c \left[ V(c') \right] = c^* + p (l+\mathbb{E}_c \left[ V(c') \right]) $$
+So that:
+$$\mathbb{E}_c \left[ V(c') \right] = \frac{c^*}{1-p}-l$$
+We can calculate the expected value of $V$.
+\[
+\mathbb{E}_{c}\left[ V(c') \right] = \int_{0}^{c^*} [c + p (l+ \mathbb{E}_{c}\left[ V(c') \right])] \, dc + \int_{c^*}^{1} [l + \mathbb{E}_{c}\left[ V(c') \right]] \, dc.
+\]
+\[
+\mathbb{E}_c \left[ V(c') \right] = \frac{(c^*)^2}{2} + p (l+ \mathbb{E}_c \left[ V(c') \right])c^* + l + \mathbb{E}_c \left[ V(c') \right] - {c^*} [l + \mathbb{E}_c \left[ V(c') \right]] 
+\]
+Plug the equation (the second expression in this answer) above into the last one:
+\[
+\frac{c^*}{1-p}-l = \frac{(c^*)^2}{2} + \frac{p (c^*)^2}{1-p} +l+ \frac{c^*}{1-p}-l - \frac{(c^*)^2}{1-p} 
+\]
+So that 
+$$\frac{(c^*)^2}{2}=l$$
+And the optimal threshold  is \( c^* = \sqrt{2l} \).
+
+The probability \( p \) is the probability of paying the continuation cost of the game ($l + \mathbb{E}_c \left[ V(c') \right]$) when choosing to undertake a project. When determining the threshold \( c^* \), the agent weighs future losses in the same way that it does present losses, since there is no discounting. That is, if $p$ increases, he knows his only way out is still to undertake the project. The project is now worse, but the alternative is also worse (because the continuation value decreases). These two forces cancel out, and therefore, we can evaluate how good a draw $c$ is by comparing it exclusively to $l$. 
+
+\item How would these results change if we added discounting to the framework? Redo steps a and b, assuming that the agent discounts the future with discount factor $0 < \beta < 1$ and assuming that $p = 0$. Show that the optimal threshold is given by
+\begin{equation*}
+	c^* = \frac{1}{\beta} \bigg( \beta - 1 + \sqrt{ (1-\beta)^2 + 2 \beta^2 l } \bigg)
+\end{equation*}
+
+\textbf{Answer:} the Bellman equation becomes (assuming the penalty is realized next period):
+\[
+V(c) = \min \left\{ \beta l + \beta \mathbb{E}_c \left[ V(c') \right], \; c + p (\beta l+\beta\mathbb{E}_c \left[ V(c') \right])  \right\}.
+\]
+But since $p=0$:
+\[
+V(c) = \min \{\beta l + \beta  \mathbb{E}_c \left[ V(c') \right], \, c \}
+\]
+Given that \( c \) is uniformly distributed over [0, 1], the expectation can be split based on a threshold \( c^* \):
+\[
+\mathbb{E}_c \left[ V(c') \right] = \int_{0}^{c^*} c \, dc + \int_{c^*}^{1} (\beta l + \beta \mathbb{E}_c \left[ V(c') \right]) \, dc
+\]
+So that \[
+\mathbb{E}_c \left[ V(c') \right] = \frac{(c^*)^2}{2} + (\beta l + \beta \mathbb{E}_c \left[ V(c') \right])(1 - c^*)
+\]
+At the threshold \( c = c^* \), the agent is indifferent between undertaking the project and waiting. Therefore:
+\[
+c^* = \beta l + \beta \mathbb{E}_c \left[ V(c') \right]
+\]
+Or: 
+\[
+\frac{c^*-\beta l}{\beta} =  \mathbb{E}_c \left[ V(c') \right]
+\]
+Plugging the latter equation into the previous expression for the expectation we found above, \[
+\frac{c^*-\beta l}{\beta} = \frac{(c^*)^2}{2} + (c^*)(1 - c^*)
+\]
+Simplifying leads to a quadratic equation in \( c^* \):
+\[
+\beta c^{*2} + 2(1 - \beta)c^* - 2l = 0
+\]
+Solving this quadratic equation using the quadratic formula:
+\[
+c^* = \frac{ \beta - 1 + \sqrt{(1 - \beta)^2 + 2\beta ^ 2 l} }{ \beta }
+\]
+
+
+\item When $0 < \beta < 1$, is the optimal value of $c^*$ still independent of the value of $p$? If not, how does $c^*$ qualitatively vary with $p$? Provide an intuitive argument.
+
+\textbf{Answer:} no, it will not be independent. To see this, start with $p=1$. In this case, the agent never undertakes the project because he incurs an extra cost (both with and without discounting). For a very high $p$, under no discounting, the agent will base their decisions on $l$ only, because even if the expected number of projects to be undertaken before a successful one is extremely high, the alternative is infinite suffering (since time periods very far ahead are weighted the same as today). In contrast, when the agent discounts the future, a possible success in the distant future is not very important. As $p$ lowers, the expected number of projects to be undertaken before a successful one is lower, and thus the agent starts increasing their willingness to pay to undertake a project. That is, if $p$ goes down, $c^*$ goes up.
+
+\item Take the perspective of an agent who has not yet observed the current period's draw of $c$. Prove that the expected delay until completion is given by:
+\begin{equation*}
+	\frac{1}{c^*(1-p)} - 1
+\end{equation*}
+
+\textbf{Answer:} note that $c^*$ is also the probability of undertaking a project, and $1-p$ is the change of it succeeding. At any period, since the two events are independent, the chance of undertaking a project and succeeding is $c^*(1-p)$. This is just a Bernoulli process with rate of arrival $c^*(1-p)$. We expect to take $\frac{1}{c^*(1-p)}$ periods in order to get a success. We can remove the current period (since we have not seen the realization of $c$ yet). So the expected delay is:
+$$\frac{1}{c^*(1-p)} - 1$$
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Problem 3: Consumption-Savings with Deterministic Income}
+
+Consider an economy populated by a continuum of infinitely lived households. There is no uncertainty in this economy for now. Households' preferences are given by
+\begin{equation*}
+	\max \int_0^\infty e^{-\rho t} u(c_t) dt.
+\end{equation*}
+That is, households discount future consumption $c_t$ at a rate $\rho$. Oftentimes, we will use constant relative risk aversion (CRRA) preferences, given by
+\begin{equation*}
+	u(c_t) = \frac{c_t^{1-\gamma}}{1-\gamma}.
+\end{equation*}
+A special form of these preferences are log preferences, 
+\begin{equation*}
+	u(c_t) = \log(c_t). 
+\end{equation*}
+
+
+The household's flow budget constraint in this economy is given by
+\begin{equation*}
+	\frac{d}{dt}(P_t a_t) = i_t (P_t a_t) - P_t c_t + P_t y_t,
+\end{equation*}
+where $P_t$ is the nominal price level, $c_t$ is real consumption expenditures, $a_t$ is the real wealth of the household and $\{y_t\}$ is an \textbf{exogenous} stream of income whose future path the household knows at any time point with certainty (because there is no uncertainty or risk for now).
+
+
+\vspace{5mm}
+\begin{enumerate}
+\item [(a)] Derive the budget constraint for real wealth, i.e., $\frac{d}{dt} a_t = \dot a_t$. Define the real interest rate as $r_t = i_t - \pi_t$, where $\pi_t \equiv \frac{\dot P_t}{P_t}$ is price inflation.
+
+\textbf{Answer: } we have that:
+\[
+\frac{d}{dt}(P_t a_t) = i_t (P_t a_t) - P_t c_t + P_t y_t.
+\]
+Noting that by the product rule:
+\[
+\frac{d}{dt}(P_t a_t) = \dot{P}_t a_t + P_t \dot{a}_t.
+\]
+Substituting this back into the equation, we have:
+\[
+\dot{P}_t a_t + P_t \dot{a}_t = i_t (P_t a_t) - P_t c_t + P_t y_t.
+\]
+\[
+P_t \dot{a}_t = i_t (P_t a_t) - P_t c_t + P_t y_t - \dot{P}_t a_t.
+\]
+
+Divide both sides by \(P_t\) to express in real terms:
+
+\[
+\dot{a}_t = i_t a_t - c_t + y_t - \frac{\dot{P}_t}{P_t} a_t.
+\]
+Given \(\frac{\dot{P}_t}{P_t} = \pi_t\) (the inflation rate) and the real interest rate \(r_t = i_t - \pi_t\):
+
+\[
+\dot{a}_t = (i_t - \pi_t) a_t + y_t - c_t = r_t a_t + y_t - c_t.
+\]
+	
+\item [(b)] Derive the lifetime budget constraint
+
+\textbf{Answer:} first, recognize that the budget constraint in the previous item is of the form $\dot{y}_t + p(t)y_t = q(t)$, where $p(t)=r_t$. Let’s define the integrating factor \(\mu(t)\):
+
+\[
+\mu(t) = e^{ -\int_0^t r_s \, ds }.
+\]
+
+Multiplying both sides by $\mu(t)$:
+$$\mu(t) \dot{a}_t - r_t \mu(t) a_t=\mu(t)(y_t-c_t)$$
+\[
+\frac{d}{dt} [ \mu(t) a_t ]=\mu(t)(y_t-c_t)
+\]
+
+Integrate both sides from time 0 to infinity:
+
+\[
+\int_0^\infty \frac{d}{dt} [ \mu(t) a_t ] \, dt = \int_0^\infty \mu(t) [ y_t - c_t ] \, dt.
+\]
+
+Evaluate the left-hand side:
+
+\[
+\left[ \mu(t) a_t \right]_0^\infty = \int_0^\infty \mu(t) [ y_t - c_t ] \, dt.
+\]
+
+Assuming the No-Ponzi condition (the present value of wealth at infinity is zero):
+
+\[
+\lim_{t \to \infty} \mu(t) a_t = 0.
+\]
+
+Therefore, the left-hand side simplifies to:
+
+\[
+0 - \mu(0) a_0 = -a_0.
+\]
+
+\[
+-a_0 = \int_0^\infty \mu(t) [ y_t - c_t ] \, dt.
+\]
+
+\[
+a_0 = \int_0^\infty \mu(t) [ c_t - y_t ] \, dt.
+\]
+
+Bring \( a_0 \) to the right-hand side:
+
+\[
+\int_0^\infty \mu(t) c_t \, dt = a_0 + \int_0^\infty \mu(t) y_t \, dt.
+\]
+
+\[
+\int_0^\infty e^{ -\int_0^t r_s \, ds } c_t \, dt = a_0 + \int_0^\infty e^{ -\int_0^t r_s \, ds } y_t \, dt,
+\]
+
+which states that the present value of consumption equals initial wealth plus the present value of income, discounted by the real interest rate \( r_t \).
+
+	
+\item [(c)] In class, we have so far always worked with the flow budget constraint as our constraint. And then we used either calculus of variations or optimal control theory. Alterantively, we can use the lifetime budget constraint as our constraint in this setting. (Why? When would you not be able to work with a lifetime budget constraint?) Set up the optimization problem with the lifetime budget constraint (i.e., write down the Lagrangian and introduce a multiplier) and take the first-order conditions. Solve for a consumption Euler equation.
+
+\textbf{Answer:} In this setting, since there is no uncertainty and households have perfect foresight, we can use the lifetime budget constraint directly in our optimization problem. This approach simplifies the analysis by reducing the dynamic optimization problem to a static one. However, we cannot always use the lifetime budget constraint, e.g. in cases where there is uncertainty, borrowing constraints, or if the consumer faces liquidity constraints that prevent them from freely reallocating consumption over time. Now to the maximization problem:
+\[
+\max_{ \{ c_t \} } \int_0^\infty e^{ -\rho t } u(c_t) \, dt
+\]
+Subject to:
+\[
+\int_0^\infty e^{ -\int_0^t r_s \, ds } c_t \, dt = a_0 + \int_0^\infty e^{ -\int_0^t r_s \, ds } y_t \, dt
+\]
+We have that the associated Lagrangian is:
+\[
+\mathcal{L} = \int_0^\infty \left[ e^{ -\rho t } u(c_t) - \lambda e^{ -\int_0^t r_s \, ds } c_t \right] dt + \lambda \left( a_0 + \int_0^\infty e^{ -\int_0^t r_s \, ds } y_t \, dt \right)
+\]
+FOC:
+\[
+\frac{ \partial \mathcal{L} }{ \partial c_t } = e^{ -\rho t } u'(c_t) - \lambda e^{ -\int_0^t r_s \, ds } = 0
+\]
+\[
+u'(c_t) = \lambda e^{ (\rho t - \int_0^t r_s \, ds ) }
+\]
+Take logs and differentiate with respect to time:
+
+   \[
+   \dot{c} \frac{u''(c_t)}{u'(c_t)} = \rho - r_t
+   \]
+
+\[
+\frac{ \dot{c}_t }{ c_t } = \frac{u'(c_t)}{ u''(c_t) c_t} (\rho  - r_t )
+\]
+
+	
+\item [(d)] Consider the two functional forms given earlier for utility, $u(c_t)$. Plug them into the Euler equation and solve for the term $\frac{u'(c_t)}{ u''(c_t) c_t}$.
+
+\textbf{Answer:} for CRRA:
+\[
+u'(c_t) = \frac{ d }{ d c_t } \left( \frac{ c_t^{ 1 - \gamma } }{ 1 - \gamma } \right ) = c_t^{ -\gamma }
+\]
+\[
+u''(c_t) = \frac{ d }{ d c_t } \left( c_t^{ -\gamma } \right ) = -\gamma c_t^{ -\gamma - 1 }
+\]
+\[
+u''(c_t) c_t = \left( -\gamma c_t^{ -\gamma - 1 } \right ) c_t = -\gamma c_t^{ -\gamma }
+\]
+\[
+\frac{ u'(c_t) }{ u''(c_t) c_t } = \frac{ c_t^{ -\gamma } }{ -\gamma c_t^{ -\gamma } } = \frac{ 1 }{ -\gamma } = -\frac{ 1 }{ \gamma }
+\]
+So that:
+\[
+\frac{ \dot{c}_t }{ c_t } = \frac{1}{\gamma} (r_t  - \rho )
+\]
+
+
+For log utility:
+
+\[
+u'(c_t) = \frac{ d }{ d c_t } ( \ln c_t ) = \frac{ 1 }{ c_t }
+\]
+\[
+u''(c_t) = \frac{ d }{ d c_t } \left( \frac{ 1 }{ c_t } \right ) = -\frac{ 1 }{ c_t^2 }
+\]
+\[
+u''(c_t) c_t = \left( -\frac{ 1 }{ c_t^2 } \right ) c_t = -\frac{ 1 }{ c_t }
+\]
+\[
+\frac{ u'(c_t) }{ u''(c_t) c_t } = \frac{ \frac{ 1 }{ c_t } }{ -\frac{ 1 }{ c_t } } = -1
+\]
+\[
+\frac{ \dot{c}_t }{ c_t } = r_t  - \rho 
+\]
+\end{enumerate}
+
+
+\vspace{6mm}
+\noindent
+We will now derive the simple Euler equation using two different approaches. The first approach will be using optimal control theory. In Problem 2, we will then use dynamic programming and confirm that the two approaches are equivalent.
+
+\vspace{5mm}
+\begin{enumerate}
+\item [(e)] Write down the optimal control problem. Identify the state, control variables and multipliers.
+
+\textbf{Answer:}
+\[
+v(k_0) = \max_{ \{ c_t \}_{t \geq 0} } \int_0^\infty e^{ -\rho t } u(c_t) \, dt
+\]
+subject to
+\[
+\dot{a}_t = r_t a_t + y_t - c_t.
+\]
+	
+
+
+\begin{itemize}
+    \item State variable: \( a_t \)
+    \item Control variable: \( c_t \)
+    \item Multiplier: $\mu_t $ for the $\dot{a}_t = r_t a_t + y_t - c_t$ equation
+\end{itemize}
+
+
+	
+\item [(f)] Write down the (current-value) Hamiltonian.\\
+\textbf{Answer}: \( H(c_t, a_t, \mu_t) = u(c_t) + \mu_t \left[ r_t a_t + y_t - c_t \right] \)
+	
+\item [(g)] Find the FOCs. Rearrange and again find the consumption Euler equation. Confirm that it's the same equation we derived above. 
+
+\textbf{Answer:} 
+1. Optimality Condition for \( c_t \):
+\[
+\frac{\partial H}{\partial c_t} = u'(c_t) - \mu_t = 0
+\]
+which implies:
+\[
+u'(c_t) = \mu_t
+\]
+
+2. Multiplier Condition (Costate Equation):
+\[
+\dot{\mu}_t = \rho \mu_t - \frac{\partial H}{\partial a_t}
+\]
+Since \( \frac{\partial H}{\partial a_t} = \mu_t r_t \), this gives:
+\[
+\dot{\mu}_t = \rho \mu_t - \mu_t r_t
+\]
+or equivalently:
+\[
+\dot{\mu}_t = \mu_t (\rho - r_t)
+\]
+
+3. State Condition (Equation of Motion for \( a_t \)):
+\[
+\dot{a}_t = \frac{\partial H}{\partial \mu_t} = r_t a_t + y_t - c_t
+\]
+From condition 1, using the chain rule, we get:
+\[
+u''(c_t) \dot{c}_t = \dot{\mu}_t
+\]
+Substituting into condition 2:
+\[
+u''(c_t) \dot{c}_t = u'(c_t) (\rho - r_t)
+\]
+\[
+\dot{c}_t = \frac{u'(c_t)}{u''(c_t)} (\rho - r_t)
+\]
+\end{enumerate} 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 4: Consumption-Savings using Dynamic Programming}
+
+We concluded Problem 1 by deriving the household's consumption Euler equation using optimal control theory. We will now do the same using dynamic programming.
+
+
+Consider again the preferences of our household, given by
+\begin{equation*}
+	V_0 = \max_{\{c_t\}_{t>0}} \int_0^\infty e^{-\rho t} u(c_t) dt,
+\end{equation*}
+as well as the flow budget constraint
+\begin{equation*}
+	\dot a_t = r_t a_t + y_t - c_t,
+\end{equation*}
+where the household takes the (deterministic) paths of real interest rates $\{r_t\}$ and income $\{y_t\}$ as given.
+
+
+We will now derive a recursive representation of the household's value function, and use the resulting Hamilton-Jacobi-Bellman (HJB) equation to derive the consumption Euler equation.
+
+
+\vspace{2mm}
+\begin{enumerate}[(a)] 
+\item We will derive a recursive representation for the household value function $V_t(a) = V(t, a)$. Why does the value function take this form in this context? I.e., why does $V$ depend explicitly on calendar time, and why are we working with a representation of the problem where $a$ is the only state variable?
+
+\textbf{Answer:} because we are taking the perspective of a household that may hold assets and choose, for instance, to invest those assets in financial markets and make a return $r_t$, $r_t$ is determined outside the model. Furthermore, this setup does not include production, and the exogenous stream of income is chosen to be either saved or consumed. Therefore, $a$ is the only state variable since that is the only "stock" variable that the household controls, and $V_t$ depends on $t$ since $r_t$ is potentially time-varying.
+
+\item In class, we derived the HJB heuristically, starting with a discrete time Bellman equation and taking the continuous time limit. We will now derive the HJB equation from the sequence problem. Recall in Lecture 1 we derived the Bellman equation from the sequence problem in discrete time. Please follow the same general proof strategy and derive the HJB in continuous time. You should arrive at the following HJB equation: 
+\begin{equation*}
+	\rho V_t(a) = \partial_t V_t(a) + \max_c \bigg\{ u(c) + \Big[ r_t a + y_t - c \Big] \partial_a V_t(a) \bigg\}
+\end{equation*}
+where $\partial_x$ denotes the partial derivative with respect to $x$. 
+
+\textbf{Answer:} 
+
+\[
+V_t(a) = 	\max_{\{a_t\}_{t>0}} \left\{\int_0^\infty e^{-\rho t} u(r_t a_t + y_t -\dot a_t) dt\right\}
+\]
+
+\[
+V_t(a) = 	\max_{\{a_t\}_{t>0}} \left\{\int_0^{\Delta t} e^{-\rho t} u(r_t a_t + y_t -\dot a_t) dt + \int_{\Delta t}^\infty e^{-\rho t} u(r_t a_t + y_t -\dot a_t) dt\right\}
+\]
+
+\[
+V_t(a) = 	\max_{\{a_t\}_{t>0}} \left\{\int_0^{\Delta t} e^{-\rho t} u(r_t a_t + y_t -\dot a_t) dt + e^{\rho \Delta t}V_{0+\Delta t}(a_{t+\Delta t})\right\}
+\]
+
+But we know that, as $\Delta t$ goes to 0:
+$$\frac{V_{t+\Delta t}(a_{t+\Delta t})-V_t(a_t)}{\Delta t} = \dot V_t(a_t) = \partial_t V_t(a_t) + \partial_a V_t(a_t) \dot a_t$$
+
+\[
+V_t(a) - e^{\rho \Delta t} V_t(a) = 	\max_{\{a_t\}_{t>0}} \left\{\Delta t u(c_t) + e^{\rho \Delta t}[\partial_t V_t(a) + \partial_a V_t(a) \dot a]\Delta t\right\}
+\]
+
+\[
+\frac{(1 - e^{\rho \Delta t})V_t(a)}{\Delta t} = 	\max_{\{a_t\}_{t>0}} \left\{ u(c_t) + \partial_t V_t(a) + \partial_a V_t(a) \dot a\right\}
+\]
+
+Applying l'Hopital to the left-hand side:
+\[
+\rho V_t(a) = \partial_t V_t(a) + \max_{\{a_t\}_{t>0}} \left\{ u(c_t) + \partial_a V_t(a) \dot a\right\}
+\]
+\begin{equation*}
+	\rho V_t(a) = \partial_t V_t(a) + \max_c \bigg\{ u(c) + \Big[ r_t a + y_t - c \Big] \partial_a V_t(a) \bigg\}
+\end{equation*}
+
+\item Why is there a $\partial_t V_t(a)$ term? 
+
+\textbf{Answer:} 
+ The value function \(V_t(a)\) depends explicitly on calendar time \(t\) because the environment is potentially non-stationary; that is, key parameters like the interest rate \(r_t\) and income \(y_t\) may change over time. As a result, the household's optimization problem is time-dependent, and the value function must capture this dependence. When we derive the Hamilton-Jacobi-Bellman (HJB) equation, we need to account for the explicit time dependence of \(V_t(a)\), which introduces the \(\partial_t V_t(a)\) term in the equation. In sum: there is value that comes from beyond the trade off between consumption and savings. The current value includes this expectation of exogenous growth in the value function.    
+
+\item Write down the FOC for consumption and interpret every term. Define and discuss the consumption policy function. 
+
+\textbf{Answer:} 
+    Starting from the HJB equation:
+    \[
+    \rho V_t(a) = \partial_t V_t(a) + \max_c \left\{ u(c) + \left[ r_t a + y_t - c \right] \partial_a V_t(a) \right\}
+    \]
+    The maximization problem inside the HJB is:
+    \[
+    \max_c \left\{ u(c) + \left[ r_t a + y_t - c \right] \partial_a V_t(a) \right\}
+    \]
+    FOC:
+    \[
+    \frac{\partial}{\partial c} \left\{ u(c) + \left[ r_t a + y_t - c \right] \partial_a V_t(a) \right\} = 0
+    \]
+    \[
+    u'(c) = \partial_a V_t(a)
+    \]
+    Which implicitly defines $c(a)$, the policy function.
+    \(u'(c)\) is the marginal utility of consumption—the additional utility gained from consuming an extra unit of the good. Instead, \(\partial_a V_t(a)\)is the marginal value of assets—the additional value from having an extra unit of assets. The FOC equals the instantaneous utility gain in increasing flow consumption to the increase in the value function from saving slightly more.
+
+\item Plug the consumption policy function back into the HJB. Discuss why this is now a non-linear partial differential equation. 
+
+\textbf{Answer:} substituting the consumption policy function back into the HJB:
+    \[
+    \rho V_t(a) = \partial_t V_t(a) + u(c(a)) + \left[ r_t a + y_t - c \right] \partial_a V_t(a)
+    \]
+    
+    Since \(c\) depends on \(\partial_a V_t(a)\) and \(u(c)\) is generally a non-linear function, the HJB becomes:
+    
+    \[
+    \rho V_t(a) = \partial_t V_t(a) + u\left( (u')^{-1} \left( \partial_a V_t(a) \right) \right) + \left[ r_t a + y_t - (u')^{-1} \left( \partial_a V_t(a) \right) \right] \partial_a V_t(a)
+    \]
+    This equation involves \(V_t(a)\) and its derivatives in a non-linear way due to the non-linear functions \(u\) and \(u'\). Therefore, the HJB is a non-linear partial differential equation (PDE) in the variables \(t\) and \(a\).
+	
+\item Take the envelope condition by differentiating the HJB with respect to $a$. 
+
+\textbf{Answer:}   
+    Differentiating both sides of the HJB with respect to \(a\):
+
+    \[
+    \partial_a \left[ \rho V_t(a) \right] = \partial_a \left[ \partial_t V_t(a) + u(c(a)) + \left( r_t a + y_t - c \right) \partial_a V_t(a) \right]
+    \]
+    \[
+    \rho \partial_a V_t(a) = \partial_t \partial_a V_t(a) + u'(c(a)) \frac{\partial c}{\partial a} + \left[ r_t - \frac{\partial c}{\partial a} \right] \partial_a V_t(a) + \left( r_t a + y_t - c \right) \partial_{aa} V_t(a)
+    \]    
+    Using the FOC \(u'(c(a)) = \partial_a V_t(a)\), the terms \(u'(c) \frac{\partial c}{\partial a}\) and \(-\partial_a V_t(a) \frac{\partial c}{\partial a}\) cancel out. Simplifying the equation:
+    \[
+    \rho \partial_a V_t(a) = \partial_t \partial_a V_t(a) + r_t \partial_a V_t(a) + \left( r_t a + y_t - c \right) \partial_{aa} V_t(a)
+    \]
+    Rewriting:
+    \[
+    (\rho - r_t) \partial_a V_t(a) = \partial_t \partial_a V_t(a) + \left( r_t a + y_t - c \right) \partial_{aa} V_t(a)
+    \]
+    
+\item Use the chain rule to characterize $\frac{d}{dt} V(t, a_t)$, taking into account explicitly that $a_t$ is also a function of time. 
+
+\textbf{Answer:}  Applying the chain rule:
+    
+    \[
+    \frac{d}{dt} V(t, a_t) = \partial_t V(t, a_t) + \partial_a V(t, a_t) \dot{a}_t
+    \]
+    
+    This equation accounts for both the explicit dependence of \(V\) on time \(t\) and the implicit dependence through the asset holdings \(a_t\), which change over time according to the budget constraint.
+
+\item You will now arrive at the consumption Euler equation by combining 3 equations: the characterization of $\frac{d}{dt} V_t(a_t)$ from the previous part, the FOC, and the envelope condition.
+
+\textbf{Answer:} from part (d):  
+    \[
+    u'(c_t) = \partial_a V_t(a_t)
+    \]
+    Differentiating with respect to time:
+    \[
+    \frac{d}{dt} u'(c_t) = \frac{d}{dt} \partial_a V_t(a_t)
+    \]
+    \[
+    u''(c_t) \dot{c}_t = \partial_t \partial_a V_t(a_t) + \partial_{aa} V_t(a_t) \dot{a}_t
+    \]
+    From part (f):
+    \[
+    (\rho - r_t) \partial_a V_t(a_t) = \partial_t \partial_a V_t(a_t) + \partial_{aa} V_t(a_t) \dot{a}_t
+    \]
+    So that:
+    \[
+    u''(c_t) \dot{c}_t = (\rho - r_t) \partial_a V_t(a_t)
+    \]
+    And since \(u'(c_t) = \partial_a V_t(a_t)\):  
+    \[
+    u''(c_t) \dot{c}_t = (\rho - r_t) u'(c_t)
+    \]
+    Finally:
+\[
+\dot{c}_t = \frac{u'(c_t)}{u''(c_t)} (\rho - r_t)
+\]
+
+
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 5: Oil Extraction}
+
+Time is continuous and indexed by $t \in [0, \infty)$. At time $t=0$, there is a finite amount of oil $x_0$. Denote by $c_t$ the rate of oil consumption at date $t$. Oil is non-renewable, so the remaining amount of oil at date $t$ is 
+\begin{equation*}
+	x_t = x_0 - \int_0^t c_s ds.
+\end{equation*}
+A social planner (the government) wants to set the rate of oil consumption to maximize utility of the representative household given by
+\begin{equation*}
+	\int_0^\infty e^{- \rho t} u(c_t) dt,
+\end{equation*}
+with $u(c) = \log(c)$. 
+
+\vspace{2mm}
+\begin{enumerate}[(a)]
+\item Explain the expression for the remaining amount of oil: $x_t = x_0 - \int_0^t c_s ds$
+
+\textbf{Answer:} The expression represents the depletion of the oil stock over time. Initially, there is an amount $x_0$ of oil. As time progresses, the cumulative consumption of oil up to time $t$ is given by $\int_0^t c_s \, ds$. Since oil is non-renewable, every unit consumed reduces the available stock. Therefore, the remaining amount of oil at time $t$ is the initial stock minus the cumulative consumption.
+
+\item Set up the (present-value) Hamiltonian for this problem. List all state variables, control variables, and multipliers
+
+\textbf{Answer:} 
+The state variable is $x_t$ (stock of oil). The control variable is $c_t$ (rate of oil consumption). Finally, the costate variable (multiplier) is $\lambda_t$.\\
+Differentiating the equation for the stock of oil with respect to time, and applying Leibniz's rule:
+\[
+    \dot{x}_t = - c_t
+\]
+Which is the state equation. Our objective function was given:
+\[
+    \max_{\{c_t\}} \int_0^\infty e^{- \rho t} \log(c_t) \, dt
+\]
+And thus out Hamiltonian is simply:
+\[
+    H = \log(c_t) - \lambda_t c_t
+\]
+where $\lambda_t$ is the current-value costate variable.
+
+\item Write down the first-order necessary conditions. Solve for the optimal policy $c_t$
+
+\textbf{Answer:} 
+FOCs associated with the Hamiltonian above:
+\[
+    \frac{\partial H}{\partial c_t} = 0 \implies \frac{1}{c_t} - \lambda_t = 0
+\]
+Thus,
+\[
+    \lambda_t = \frac{1}{c_t}
+\]
+Furthermore, we have the following costate equation:
+\[
+    \dot{\lambda}_t = \rho \lambda_t - \frac{\partial H}{\partial x_t}
+\]
+Since $H$ does not explicitly depend on $x_t$, we have:
+\[
+    \frac{\partial H}{\partial x_t} = 0 \implies \dot{\lambda}_t = \rho \lambda_t
+\]
+So that:
+\[
+    \lambda_t = \lambda_0 e^{\rho t}
+\]
+Which we can substitute back into the FOC:
+\[
+    c_t = \frac{1}{\lambda_t} = \frac{1}{\lambda_0 e^{\rho t}} = \left( \frac{1}{\lambda_0} \right) e^{- \rho t}
+\]
+Let $k = \frac{1}{\lambda_0}$, then:
+\[
+    c_t = k e^{- \rho t}
+\]
+
+We have that:
+\[
+    \int_0^\infty c_t \, dt = x_0
+\]
+\[
+    \int_0^\infty k e^{- \rho t} \, dt = \frac{k}{\rho} = x_0
+\]
+And therefore,
+\[
+    k = \rho x_0
+\]
+\[
+    c_t = \rho x_0 e^{- \rho t}
+\]
+Trivially, deriving both sides with respect to time and dividing through by $c_t$:
+$$\frac{\dot c_t}{c_t} = -\rho$$
+
+\item Write down the HJB equation for this problem
+
+\textbf{Answer:} the HJB equation is:
+\[
+    \rho V(x_t) = \max_{c_t} \left\{ \log(c_t) + V'(x_t) \dot{x}_t \right\}
+\]
+Since $\dot{x}_t = - c_t$, the equation becomes:
+\[
+    \rho V(x) = \max_{c} \left\{ \log(c) - V'(x) c \right\}
+\]
+
+\item Guess and verify that the value function is $V(x) = a + b \log(x)$. Solve for $a$ and $b$
+
+
+\textbf{Answer:} given:
+\[
+    V(x) = a + b \log(x)
+\]
+\[
+    V'(x) = \frac{b}{x}
+\]
+Substituting back into the HJB:
+\[
+    \rho \left( a + b \log(x) \right) = \max_{c} \left\{ \log(c) - \frac{b}{x} c \right\}
+\]
+We get the following FOC:
+\[
+    \frac{\partial}{\partial c} \left( \log(c) - \frac{b}{x} c \right) = 0 \implies \frac{1}{c} - \frac{b}{x} = 0
+\]
+\[
+    c = \frac{x}{b}
+\]
+Which we can again plug back into the HJB and remove the max operator:
+\[
+    \rho \left( a + b \log(x) \right) = \log\left( \frac{x}{b} \right) - \frac{b}{x} \left( \frac{x}{b} \right)
+\]
+\[
+    \rho \left( a + b \log(x) \right) = \log(x) - \log(b) - 1
+\]
+\[
+    \rho a + \rho b \log(x) = \log(x) - \log(b) - 1
+\]
+Since the coefficients on $log(x)$ must be the same on both sides:
+$$b = \frac{1}{\rho}$$
+So that:
+\[
+    0 = - \rho a + log(\rho) - 1
+\]
+$$a=\frac{ \log(\rho) - 1 }{ \rho }$$
+The value function is:
+\[
+    V(x) = \frac{ \log(\rho) - 1 }{ \rho } + \frac{1}{\rho} \log(x)
+\]
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+

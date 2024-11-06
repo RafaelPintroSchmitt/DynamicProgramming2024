@@ -115,13 +115,27 @@ We interpret a time period as a quarter.
 \begin{enumerate}[(a)]
 \item Give economic interpretations of $\alpha = P_{11}$ and $\beta = P_{22}$
 
+\textbf{Answer:} $\alpha$ is the probability for an unemployed person to remain unemployed, $\beta$ is the probability that an employed person remains employed.
 \item Why do the rows of $P$ sum to $1$?
 
+\textbf{Answer:} Since there are two states, we have that the probability of an unemployed person remaining unemployed OR changing to employment must be one (analogously for employed). Therefore both rows must sum to 1.
 \item Is there an absorbing state in this model?
 
+\textbf{Answer:} Yes, P is a contraction, so there is a single fixed point.
 \item Compute the probability of being unemployed two quarters after being employed. 
 
+\textbf{Answer:} There are 2 paths: (1) Start employed, continue employed, become unemployed; (2) Start employed, become unemployed, remain unemployed.\\
+The probability of (1) is $(\beta)\times (1-\beta)$ and the probability of (2) is $(1-\beta)\times (\alpha)$. So the probability of being unemployed two quarters after being employed is simply the sum of the two: 
+$$(\beta)\times (1-\beta) + (1-\beta)\times (\alpha)$$
 \item Denote the \textit{marginal (probability) distribution} of $y_t$ at time $t$ by $\psi_t$. $\psi_t(y^L)$ is the probability that process $y_t$ is in state $y^L$ at time $t$. It is easiest to think of $\psi_t$ as a time-varying row vector. Use the law of total probability to decompose $y_{t+1} = y^L$, accounting for all the possible ways in which state $y^L$ can be reached at time $t+1$. 
+
+\textbf{Answer:} $y_{t+1}$ is a function of the probability of being in each state at $t$. In the simple binary case (unemployed and employed), this becomes:
+$y_{t+1}[1] = P(U_{t+1}|U_{t})\times P(U_{t}) + P(U_{t+1}|E_{t})\times P(E_{t})$
+Where $P(U_{t+1}|U_{t})$ is the probability of being unemployed at time $t+1$ given that you were unemployed at time $t$, and the result above is obtained by the law of total probability ($\{E{t},U{t} \}$ is a partition of the state space at time $t$). Similarly,
+$y_{t+1}[2] = P(E_{t+1}|E_{t})\times P(E_{t}) + P(E_{t+1}|U_{t})\times P(U_{t})$.\\
+Using the transition matrix, we can then find that: 
+$y_{t+1}[1] = \alpha \times y_{t}[1] + (1-\alpha) \times y_{t}[2]$
+$y_{t+1}[2] = (1-\beta) \times y_{t}[1] + (\beta) \times y_{t}[2]$
 
 \item Show that the resulting equation can be written as the vector-matrix product
 \begin{equation*}
