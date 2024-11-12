@@ -2,7 +2,7 @@
 % MATLAB Code: HJB_ramsey_implicit
 % 
 % Author: Kiyea Jin
-% Date: Oct 27, 2024
+% Date: Nov 5, 2024
 %
 % Description:
 % This MATLAB script implements implicit method to solve the HJB equation
@@ -41,9 +41,10 @@ p = define_parameters();
 %% 2. INITIALIZE GRID POINTS
 
 % Steady-state level of capital: f'(kss)=rho+delta
-kss = ((p.rho+p.delta)/(p.alpha*p.A))^(1/(p.alpha-1));
+kss = ((p.rho+p.delta)/(p.A*p.alpha))^(1/(p.alpha-1));
 
-k_min = kss*exp(-p.klim);
+% log(k_min) = log(kss)-p.klim
+k_min = kss*exp(-p.klim); 
 k_max = kss*exp(p.klim);
 
 k = linspace(k_min, k_max, p.I)';
@@ -53,7 +54,7 @@ dk = (k_max-k_min)/(p.I-1);
 
 % 3-1. Construct the differential operator D such that DV=dV
 
-    D = zeros(p.I,p.I);
+    D = zeros(p.I, p.I);
     
     % Forward differencing for i=1
     D(1,1) = -1/dk; D(1,2) = 1/dk;
@@ -62,20 +63,14 @@ dk = (k_max-k_min)/(p.I-1);
     D(end,end-1) = -1/dk; D(end,end) = 1/dk;
     
     % Central differencing for i=2,...,I-1
-    for i=2:p.I-1
+    for i = 2:p.I-1
         D(i,i-1) = -0.5/dk; D(i,i+1) = 0.5/dk;
     end
 
 % 3-2. Guess an initial value of the value function
 
-    v0 = p.u(p.f(k) - p.delta*k) / p.rho;
-    V = v0;    
-
-% 3-3. 
-% Notes: This script does not consider the boundary conditions, so we'll
-    
-    c0 = p.f(k);
-    c = c0;
+    v0 = p.u(p.f(k))/p.rho;
+    V = v0;   
 
 %% 4. VALUE FUNCTION ITERATION
 
@@ -84,10 +79,13 @@ tic;
 for n = 1:p.maxit
 
     % 4-1. Compute the derivative of the value function
-    dV = D*V;
+        dV = D*V;
 
+    % 4-2. Compute the optimal consumption
+        c = p.inv_mu(dV);
+        
     % 4-3. Compute the optimal savings
-    s = p.f(k) - p.delta*k - c;
+        s = p.f(k) - p.delta*k - c;
 
     % 4-4. Update the value function: V^(n+1) = [(rho+1/Delta)*I - SD]^(-1)[u(c) + 1/Delta*V^n]
     
@@ -98,15 +96,12 @@ for n = 1:p.maxit
         % b = [u(c) + 1/Delta*V^n]
         b = p.u(c) + 1/p.Delta*V;
 
-        % V^(n+1) = B\b
+        % V^(n+1) = B^(-1)*b
         V_update = B\b;
         
         % Update the value function
         V_change = V_update - V;
         V = V_update;
-        
-    % 4-2. Compute the optimal consumption
-        c = p.inv_mu(D*V);
 
     % 4-5. Check convergence
           
