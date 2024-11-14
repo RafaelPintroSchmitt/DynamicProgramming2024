@@ -108,9 +108,83 @@ This problem collects several exercises on Brownian motion and stochastic calcul
 
 \item Show that $\mathbb Cov(B_s, B_t) = \min\{s, t\}$ for two times $0 \leq s < t$. Use the following tricks: Use the covariance formula $\mathbb Cov(A, B) = \mathbb E (AB) - \mathbb E(A) \mathbb E(B)$. Use $B_t \sim \mathcal N(0, t)$ as well as $B_t - B_s \sim \mathcal N(0, t-s)$. And use $B_t = B_s + (B_t - B_s)$.
 
+\textbf{Answer:} Let $0\leq s < t$. Since \( B_s \) and \( B_t \) are standard Brownian motions, we have:
+\[
+\mathbb{E}[B_s] = \mathbb{E}[B_t] = 0
+\]
+Thus, the covariance simplifies to:
+\[
+\text{Cov}(B_s, B_t) = \mathbb{E}[B_s B_t]
+\]
+
+We have that:
+\[
+B_t = B_s + (B_t - B_s)
+\]
+Here, \( B_t - B_s \) represents the increment of the Brownian motion from time \( s \) to \( t \), and it is independent of \( B_s \). Moreover, \( B_t - B_s \sim \mathcal{N}(0, t - s) \).
+\[
+\mathbb{E}[B_s B_t] = \mathbb{E}\left[ B_s \left( B_s + (B_t - B_s) \right) \right] = \mathbb{E}[B_s^2] + \mathbb{E}[B_s (B_t - B_s)]
+\]
+Since \( B_s \) and \( B_t - B_s \) are independent:
+\[
+\mathbb{E}[B_s (B_t - B_s)] = \mathbb{E}[B_s] \cdot \mathbb{E}[B_t - B_s] = 0 \cdot 0 = 0
+\]
+Therefore:
+\[
+\mathbb{E}[B_s B_t] = \mathbb{E}[B_s^2] = \text{Var}(B_s) = s
+\]
+And since $s<t$:
+$$\mathbb Cov(B_s, B_t) = \min\{s, t\}$$
 
 \item Let $X_t = B_t^2$. What is $\mathbb E X_t$? What is $\mathbb Cov (X_t, X_s)$?
 
+\textbf{Answer:} 
+\[
+\mathbb{E}[X_t] = \mathbb{E}[B_t^2] = \text{Var}(B_t) = t
+\]
+Now for the covariance,
+\[
+\text{Cov}(X_t, X_s) = \mathbb{E}[X_t X_s] - \mathbb{E}[X_t] \mathbb{E}[X_s]
+\]
+\[
+\text{Cov}(X_t, X_s) = \mathbb{E}[B_t^2 B_s^2] - ts
+\]
+First, note that:
+   \[
+   B_t = B_s + (B_t - B_s)
+   \]
+   \[
+   B_t^2 = \left( B_s + (B_t - B_s) \right)^2 = B_s^2 + 2 B_s (B_t - B_s) + (B_t - B_s)^2
+   \]
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = \mathbb{E}\left[ \left( B_s^2 + 2 B_s (B_t - B_s) + (B_t - B_s)^2 \right) B_s^2 \right]
+   \]
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = \mathbb{E}[B_s^4] + 2 \mathbb{E}\left[ B_s^3 (B_t - B_s) \right] + \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right]
+   \]
+Now note that for a normally distributed random variable \( Z \sim \mathcal{N}(0, \sigma^2) \), the fourth moment is $ \mathbb{E}[Z^4] = 3 \sigma^4$, so that  $  \mathbb{E}[B_s^4] = 3 s^2$. Furthermore, since \( B_s \) and \( B_t - B_s \) are independent, $2 \mathbb{E}\left[ B_s^3 (B_t - B_s) \right] = 0$. Finally, since \( B_t - B_s \) and \( B_s \) are independent:
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right] = \mathbb{E}\left[ (B_t - B_s)^2 \right] \cdot \mathbb{E}\left[ B_s^2 \right]
+     \]
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 \right] = t - s \quad \text{and} \quad \mathbb{E}\left[ B_s^2 \right] = s
+     \]
+     Therefore:
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right] = (t - s) s = s(t - s)
+     \]
+Combining all terms:
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = 3 s^2 + 0 + s(t - s) = 3 s^2 + s t - s^2 = 2 s^2 + s t
+   \]
+So that the covariance is:
+   \[
+   \text{Cov}(X_t, X_s) = \mathbb{E}[B_t^2 B_s^2] - ts = (2 s^2 + s t) - s t = 2 s^2
+   \]
+Therefore, the covariance is:
+\[
+\text{Cov}(X_t, X_s) = (st + 2s^2) - st = 2s^2
+\]
 
 \item Let $X_t = B_{t+s} - B_s$ for some fixed $s > 0$. Let $Y_t = \frac{1}{\sqrt \lambda} B_{\lambda t}$. Show that both $X_t$ and $Y_t$ are standard Brownian motion; that is, show the following 5 properties: 
 \begin{enumerate}[(i)]
@@ -121,19 +195,191 @@ This problem collects several exercises on Brownian motion and stochastic calcul
 \item Continuous 
 \end{enumerate}
 
+\textbf{Answer:} for \( X_t = B_{t+s} - B_s \), we have, for each property:
+
+\begin{enumerate}[(i)]
+    \item \( X_0 = B_{s+0} - B_s = B_s - B_s = 0 \)
+    \item 
+    \[
+    X_t = B_{t+s} - B_s
+    \]
+    Since \( B_{t+s} - B_s \sim \mathcal{N}(0, t) \) (due to the properties of Brownian motion), it follows that:
+    \[
+    X_t \sim \mathcal{N}(0, t)
+    \]
+    
+    \item  
+    For any \( h > 0 \), consider the increment \( X_{t+h} - X_t \):
+    \[
+    X_{t+h} - X_t = \left( B_{t+h+s} - B_s \right) - \left( B_{t+s} - B_s \right) = B_{t+h+s} - B_{t+s}
+    \]
+    The increment \( B_{t+h+s} - B_{t+s} \) is independent of the past and is distributed as \( \mathcal{N}(0, h) \).
+    
+    \item Consider:
+    \[
+    X_{t_h} - X_{t_h+s-1} = B_{t_h+s} - B_{s} - B_{t_h+s-1} + B_{s} = B_{t_h+s} - B_{t_h+s-1}
+    \]
+     \[
+    X_{t_h+1} - X_{t_h+s} = B_{t_h+s+1} - B_{s} - B_{t_h+s} + B_{s} = B_{t_h+s+1} - B_{t_h+s}
+    \]
+    Since Brownian motion $B_t$ has independent increments, so does $X_s$.
+    
+    \item $B_s$ is a number and $B_{t+s}$ is continuous in $t$, so that \( X_t = B_{t+s} - B_s \) must be continuous in $t$.
+\end{enumerate}
+
+Now for \( Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t} \):
+\begin{enumerate}[(i)]
+    \item
+    \[
+    Y_0 = \frac{1}{\sqrt{\lambda}} B_{0} = \frac{1}{\sqrt{\lambda}} \cdot 0 = 0
+    \]
+    \item 
+    \[
+    Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t}
+    \]
+    Since \( B_{\lambda t} \sim \mathcal{N}(0, \lambda t) \), scaling by \( \frac{1}{\sqrt{\lambda}} \) gives:
+    \[
+    Y_t \sim \mathcal{N}\left(0, \left(\frac{1}{\sqrt{\lambda}}\right)^2 \lambda t \right) = \mathcal{N}(0, t)
+    \]
+    
+    \item For any \( h > 0 \), consider the increment \( Y_{t+h} - Y_t \):
+    \[
+    Y_{t+h} - Y_t = \frac{1}{\sqrt{\lambda}} \left( B_{\lambda(t+h)} - B_{\lambda t} \right)
+    \]
+    The increment \( B_{\lambda(t+h)} - B_{\lambda t} \) is independent of the past and is distributed as \( \mathcal{N}(0, \lambda h) \). Therefore:
+    \[
+    Y_{t+h} - Y_t \sim \frac{1}{\sqrt{\lambda}} \mathcal{N}(0, \lambda h) = \mathcal{N}(0, h)
+    \]
+    Thus, the distribution of increments depends only on the length \( h \), satisfying stationarity.
+    
+    \item Consider:
+    \[
+    Y_{t_h} - Y_{t_h-1} = \frac{1}{\sqrt{\lambda}} ( B_{\lambda t_h} - B_{\lambda (t_h - 1)} )
+    \]
+    \[
+    Y_{t_h+1} - Y_{t_h} = \frac{1}{\sqrt{\lambda}} ( B_{\lambda (t_h + 1)} - B_{\lambda t_h} )
+    \]
+    Since Brownian motion has independent increments, $ ( B_{\lambda (t_h + 1)} - B_{\lambda t_h} ) \indep ( B_{\lambda t_h} - B_{\lambda (t_h - 1)}$. Therefore, $(Y_{t_h} - Y_{t_h-1}) \ indep (Y_{t_h+1} - Y_{t_h})$.
+    
+    \item Since \( B_t \) is continuous in \( t \), the process \( Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t} \) is also continuous in \( t \).
+\end{enumerate}
 
 \item Geometric Brownian motion evolves as: $dX_t = \mu X_t dt + \sigma X_t dB_t$ given an initial value $X_0$. Show that
 \begin{equation*}
 	X_t = X_0 e^{\mu t - \frac{\sigma^2}{2} t + \sigma B_t}.
 \end{equation*}
 
+\textbf{Answer:} we have that:
+
+\[
+dX_t = \mu X_t\,dt + \sigma X_t\,dB_t,
+\]
+Divide both sides by \( X_t \):
+\[
+\frac{dX_t}{X_t} = \mu\,dt + \sigma\,dB_t.
+\]
+Let \( Y_t = \ln X_t \). Ito's Lemma states that for a twice-differentiable function \( f(X_t) \):
+
+\[
+df(X_t) = f'(X_t)\,dX_t + \frac{1}{2}f''(X_t)(dX_t)^2.
+\]
+\[
+f'(X_t) = \frac{1}{X_t}, \quad f''(X_t) = -\frac{1}{X_t^2}.
+\]
+\[
+dY_t = \frac{1}{X_t}\,dX_t - \frac{1}{2}\frac{1}{X_t^2}(dX_t)^2.
+\]
+Given \( dX_t = \mu X_t\,dt + \sigma X_t\,dB_t \), we have:
+
+\[
+(dX_t)^2 = (\sigma X_t\,dB_t)^2 = \sigma^2 X_t^2\,dt,
+\]
+
+since \( (dB_t)^2 = dt \) and higher-order terms are negligible (i.e. they go to 0 faster than $\Delta t$). Substituting \( dX_t \) and \( (dX_t)^2 \) into the equation for \( dY_t \):
+
+\[
+dY_t = \frac{1}{X_t}(\mu X_t\,dt + \sigma X_t\,dB_t) - \frac{1}{2}\frac{1}{X_t^2}(\sigma^2 X_t^2\,dt).
+\]
+\[
+dY_t = \mu\,dt + \sigma\,dB_t - \frac{1}{2}\sigma^2\,dt.
+\]
+Integrate from 0 to \( t \):
+\[
+\int_{0}^{t} dY_s = \int_{0}^{t} \left( \mu - \frac{1}{2}\sigma^2 \right) ds + \int_{0}^{t} \sigma\,dB_s.
+\]
+\[
+Y_t - Y_0 = \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t.
+\]
+Since \( Y_t = \ln X_t \) and \( Y_0 = \ln X_0 \):
+\[
+\ln X_t = \ln X_0 + \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t.
+\]
+\[
+X_t = X_0 \exp\left( \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t \right).
+\]
+
 
 \item For Geometric Brownian motion as defined above, show that $\mathbb E = X_0 e^{\mu t}$.
+
+\textbf{Answer:} Using the MGF of the normal distribution:
+\[
+\mathbb{E}\left[ \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \sigma B_t \right) \right] = \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \frac{\sigma^2 t}{2} \right)
+\]
+Simplifying the exponent:
+\[
+\left( \mu - \frac{\sigma^2}{2} \right) t + \frac{\sigma^2 t}{2} = \mu t
+\]
+Thus:
+\[
+\mathbb{E}\left[ \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \sigma B_t \right) \right] = \exp\left( \mu t \right)
+\]
+Substituting back into the expression for \( \mathbb{E}[X_t] \):
+\[
+\mathbb{E}[X_t] = X_0 \exp\left( \mu t \right) = X_0 e^{\mu t}
+\]
 
 \item The Ornstein-Uhlenbeck (OU) process is like a continuous-time variant of the AR(1) process. It evolves as $dX_t = - \mu X_t dt + \sigma dB_t$ for drift parameter $\mu$, diffusion parameter $\sigma$, and some $X$. Show that it solves 
 \begin{equation*}
 	X_t = X_0 e^{- \mu t} + \sigma \int_0^t e^{-\mu(t - s)} dB_s.
 \end{equation*}
+
+\textbf{Answer:} Rearranging terms to match the standard linear form:
+\[
+dX_t + \mu X_t \, dt = \sigma \, dB_t
+\]
+The integrating factor \( M(t) \) is defined as:
+\[
+M(t) = \exp\left( \int_{0}^{t} \mu \, ds \right) = e^{\mu t}
+\]
+Multiplying the entire SDE by \( M(t) = e^{\mu t} \):
+\[
+e^{\mu t} \, dX_t + \mu e^{\mu t} X_t \, dt = \sigma e^{\mu t} \, dB_t
+\]
+Notice that the left-hand side is the differential of the product \( e^{\mu t} X_t \). Specifically:
+\[
+d\left( e^{\mu t} X_t \right) = e^{\mu t} \, dX_t + \mu e^{\mu t} X_t \, dt
+\]
+Therefore, the equation simplifies to:
+\[
+d\left( e^{\mu t} X_t \right) = \sigma e^{\mu t} \, dB_t
+\]
+\[
+\int_{0}^{t} d\left( e^{\mu s} X_s \right) = \sigma \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+The left-hand side simplifies to:
+\[
+e^{\mu t} X_t - e^{\mu \cdot 0} X_0 = e^{\mu t} X_t - X_0
+\]
+Thus:
+\[
+e^{\mu t} X_t - X_0 = \sigma \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+\[
+X_t = X_0 e^{-\mu t} + \sigma e^{-\mu t} \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+\[
+X_t = X_0 e^{-\mu t} + \sigma \int_{0}^{t} e^{-\mu (t - s)} \, dB_s
+\]
 
 \item Let $X_t = \int_0^t B_s ds$ and $Y_t = \int_0^t B_s^2 ds$. Compute $\mathbb E(X_t)$ and $\mathbb E(Y_t)$, as well as $\mathbb Var(X_t)$ and $\mathbb Var(Y_t)$. 
 \end{enumerate}

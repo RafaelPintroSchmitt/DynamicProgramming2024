@@ -1,0 +1,1264 @@
+\documentclass[11pt]{extarticle}
+\usepackage{fullpage,amsmath,amsfonts,microtype,nicefrac,amssymb, amsthm}
+\usepackage[left=1in, bottom=1in, top=1in, right = 1in]{geometry}
+\usepackage{textcomp}
+\usepackage{mathpazo}
+\usepackage{mathrsfs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{tcolorbox}
+
+\usepackage{microtype}
+
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{ragged2e}
+
+\setlength{\parindent}{24pt}
+\setlength{\jot}{8pt}
+
+
+\usepackage[shortlabels]{enumitem}
+
+
+%% FOOTNOTES
+\usepackage[bottom]{footmisc}
+\usepackage{footnotebackref}
+
+
+%% FIGURE ENVIRONMENT
+%\graphicspath{{}}
+\usepackage[margin=15pt, font=small, labelfont={bf}, labelsep=period]{caption}
+\usepackage{subcaption}
+\captionsetup[figure]{name={Figure}, position=above}
+\usepackage{float}
+\usepackage{epstopdf}
+
+
+%% NEW COMMANDS
+\renewcommand{\baselinestretch}{1.25} 
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\indep}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+\renewcommand{\b}{\begin}
+\newcommand{\e}{\end}
+
+%% NEWTHEOREM
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{ex}[thm]{Example}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{cor}[thm]{Corollary}
+
+%% LINKS and COLORS
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\definecolor{myred}{RGB}{163, 32, 45}
+\hypersetup{
+	%backref=true,
+	%pagebackref=true,
+	colorlinks=true,
+	urlcolor=myred,
+	citecolor=myred, 
+	linktoc=all,     
+	linkcolor=myred,
+}
+
+%% TABLE OF CONTENTS
+\addto\captionsenglish{
+	\renewcommand{\contentsname}
+	{}% This removes the heading over the table of contents.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%            END PREAMBLE           %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{202A: Dynamic Programming and Applications\\[5pt] {\Large \textbf{Homework \#3}}}
+
+\author{Rafael Pintro Schmitt}
+
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 1: Brownian Motion}
+
+This problem collects several exercises on Brownian motion and stochastic calculus. We denote standard Brownian motion by $B_t$.
+
+\begin{enumerate}[(a)]
+
+\item Show that $\mathbb Cov(B_s, B_t) = \min\{s, t\}$ for two times $0 \leq s < t$. Use the following tricks: Use the covariance formula $\mathbb Cov(A, B) = \mathbb E (AB) - \mathbb E(A) \mathbb E(B)$. Use $B_t \sim \mathcal N(0, t)$ as well as $B_t - B_s \sim \mathcal N(0, t-s)$. And use $B_t = B_s + (B_t - B_s)$.
+
+\textbf{Answer:} Let $0\leq s < t$. Since \( B_s \) and \( B_t \) are standard Brownian motions, we have:
+\[
+\mathbb{E}[B_s] = \mathbb{E}[B_t] = 0
+\]
+Thus, the covariance simplifies to:
+\[
+\text{Cov}(B_s, B_t) = \mathbb{E}[B_s B_t]
+\]
+
+We have that:
+\[
+B_t = B_s + (B_t - B_s)
+\]
+Here, \( B_t - B_s \) represents the increment of the Brownian motion from time \( s \) to \( t \), and it is independent of \( B_s \). Moreover, \( B_t - B_s \sim \mathcal{N}(0, t - s) \).
+\[
+\mathbb{E}[B_s B_t] = \mathbb{E}\left[ B_s \left( B_s + (B_t - B_s) \right) \right] = \mathbb{E}[B_s^2] + \mathbb{E}[B_s (B_t - B_s)]
+\]
+Since \( B_s \) and \( B_t - B_s \) are independent:
+\[
+\mathbb{E}[B_s (B_t - B_s)] = \mathbb{E}[B_s] \cdot \mathbb{E}[B_t - B_s] = 0 \cdot 0 = 0
+\]
+Therefore:
+\[
+\mathbb{E}[B_s B_t] = \mathbb{E}[B_s^2] = \text{Var}(B_s) = s
+\]
+And since $s<t$:
+$$\mathbb Cov(B_s, B_t) = \min\{s, t\}$$
+
+\item Let $X_t = B_t^2$. What is $\mathbb E X_t$? What is $\mathbb Cov (X_t, X_s)$?
+
+\textbf{Answer:} 
+\[
+\mathbb{E}[X_t] = \mathbb{E}[B_t^2] = \text{Var}(B_t) = t
+\]
+Now for the covariance,
+\[
+\text{Cov}(X_t, X_s) = \mathbb{E}[X_t X_s] - \mathbb{E}[X_t] \mathbb{E}[X_s]
+\]
+\[
+\text{Cov}(X_t, X_s) = \mathbb{E}[B_t^2 B_s^2] - ts
+\]
+First, note that:
+   \[
+   B_t = B_s + (B_t - B_s)
+   \]
+   \[
+   B_t^2 = \left( B_s + (B_t - B_s) \right)^2 = B_s^2 + 2 B_s (B_t - B_s) + (B_t - B_s)^2
+   \]
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = \mathbb{E}\left[ \left( B_s^2 + 2 B_s (B_t - B_s) + (B_t - B_s)^2 \right) B_s^2 \right]
+   \]
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = \mathbb{E}[B_s^4] + 2 \mathbb{E}\left[ B_s^3 (B_t - B_s) \right] + \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right]
+   \]
+Now note that for a normally distributed random variable \( Z \sim \mathcal{N}(0, \sigma^2) \), the fourth moment is $ \mathbb{E}[Z^4] = 3 \sigma^4$, so that  $  \mathbb{E}[B_s^4] = 3 s^2$. Furthermore, since \( B_s \) and \( B_t - B_s \) are independent, $2 \mathbb{E}\left[ B_s^3 (B_t - B_s) \right] = 0$. Finally, since \( B_t - B_s \) and \( B_s \) are independent:
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right] = \mathbb{E}\left[ (B_t - B_s)^2 \right] \cdot \mathbb{E}\left[ B_s^2 \right]
+     \]
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 \right] = t - s \quad \text{and} \quad \mathbb{E}\left[ B_s^2 \right] = s
+     \]
+     Therefore:
+     \[
+     \mathbb{E}\left[ (B_t - B_s)^2 B_s^2 \right] = (t - s) s = s(t - s)
+     \]
+Combining all terms:
+   \[
+   \mathbb{E}[B_t^2 B_s^2] = 3 s^2 + 0 + s(t - s) = 3 s^2 + s t - s^2 = 2 s^2 + s t
+   \]
+So that the covariance is:
+   \[
+   \text{Cov}(X_t, X_s) = \mathbb{E}[B_t^2 B_s^2] - ts = (2 s^2 + s t) - s t = 2 s^2
+   \]
+Therefore, the covariance is:
+\[
+\text{Cov}(X_t, X_s) = (st + 2s^2) - st = 2s^2
+\]
+
+\item Let $X_t = B_{t+s} - B_s$ for some fixed $s > 0$. Let $Y_t = \frac{1}{\sqrt \lambda} B_{\lambda t}$. Show that both $X_t$ and $Y_t$ are standard Brownian motion; that is, show the following 5 properties: 
+\begin{enumerate}[(i)]
+\item $X_0 = Y_0 = 0$ 
+\item $X_t, Y_t \sim \mathcal N(0, t)$ 
+\item Stationarity
+\item Independent increments 
+\item Continuous 
+\end{enumerate}
+
+\textbf{Answer:} for \( X_t = B_{t+s} - B_s \), we have, for each property:
+
+\begin{enumerate}[(i)]
+    \item \( X_0 = B_{s+0} - B_s = B_s - B_s = 0 \)
+    \item 
+    \[
+    X_t = B_{t+s} - B_s
+    \]
+    Since \( B_{t+s} - B_s \sim \mathcal{N}(0, t) \) (due to the properties of Brownian motion), it follows that:
+    \[
+    X_t \sim \mathcal{N}(0, t)
+    \]
+    
+    \item  
+    For any \( h > 0 \), consider the increment \( X_{t+h} - X_t \):
+    \[
+    X_{t+h} - X_t = \left( B_{t+h+s} - B_s \right) - \left( B_{t+s} - B_s \right) = B_{t+h+s} - B_{t+s}
+    \]
+    The increment \( B_{t+h+s} - B_{t+s} \) is independent of the past and is distributed as \( \mathcal{N}(0, h) \).
+    
+    \item Consider:
+    \[
+    X_{t_h} - X_{t_h+s-1} = B_{t_h+s} - B_{s} - B_{t_h+s-1} + B_{s} = B_{t_h+s} - B_{t_h+s-1}
+    \]
+     \[
+    X_{t_h+1} - X_{t_h+s} = B_{t_h+s+1} - B_{s} - B_{t_h+s} + B_{s} = B_{t_h+s+1} - B_{t_h+s}
+    \]
+    Since Brownian motion $B_t$ has independent increments, so does $X_s$.
+    
+    \item $B_s$ is a number and $B_{t+s}$ is continuous in $t$, so that \( X_t = B_{t+s} - B_s \) must be continuous in $t$.
+\end{enumerate}
+
+Now for \( Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t} \):
+\begin{enumerate}[(i)]
+    \item
+    \[
+    Y_0 = \frac{1}{\sqrt{\lambda}} B_{0} = \frac{1}{\sqrt{\lambda}} \cdot 0 = 0
+    \]
+    \item 
+    \[
+    Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t}
+    \]
+    Since \( B_{\lambda t} \sim \mathcal{N}(0, \lambda t) \), scaling by \( \frac{1}{\sqrt{\lambda}} \) gives:
+    \[
+    Y_t \sim \mathcal{N}\left(0, \left(\frac{1}{\sqrt{\lambda}}\right)^2 \lambda t \right) = \mathcal{N}(0, t)
+    \]
+    
+    \item For any \( h > 0 \), consider the increment \( Y_{t+h} - Y_t \):
+    \[
+    Y_{t+h} - Y_t = \frac{1}{\sqrt{\lambda}} \left( B_{\lambda(t+h)} - B_{\lambda t} \right)
+    \]
+    The increment \( B_{\lambda(t+h)} - B_{\lambda t} \) is independent of the past and is distributed as \( \mathcal{N}(0, \lambda h) \). Therefore:
+    \[
+    Y_{t+h} - Y_t \sim \frac{1}{\sqrt{\lambda}} \mathcal{N}(0, \lambda h) = \mathcal{N}(0, h)
+    \]
+    Thus, the distribution of increments depends only on the length \( h \), satisfying stationarity.
+    
+    \item Consider:
+    \[
+    Y_{t_h} - Y_{t_h-1} = \frac{1}{\sqrt{\lambda}} ( B_{\lambda t_h} - B_{\lambda (t_h - 1)} )
+    \]
+    \[
+    Y_{t_h+1} - Y_{t_h} = \frac{1}{\sqrt{\lambda}} ( B_{\lambda (t_h + 1)} - B_{\lambda t_h} )
+    \]
+    Since Brownian motion has independent increments, $ ( B_{\lambda (t_h + 1)} - B_{\lambda t_h} ) \indep ( B_{\lambda t_h} - B_{\lambda (t_h - 1)}$. Therefore, $(Y_{t_h} - Y_{t_h-1}) \ indep (Y_{t_h+1} - Y_{t_h})$.
+    
+    \item Since \( B_t \) is continuous in \( t \), the process \( Y_t = \frac{1}{\sqrt{\lambda}} B_{\lambda t} \) is also continuous in \( t \).
+\end{enumerate}
+
+\item Geometric Brownian motion evolves as: $dX_t = \mu X_t dt + \sigma X_t dB_t$ given an initial value $X_0$. Show that
+\begin{equation*}
+	X_t = X_0 e^{\mu t - \frac{\sigma^2}{2} t + \sigma B_t}.
+\end{equation*}
+
+\textbf{Answer:} we have that:
+
+\[
+dX_t = \mu X_t\,dt + \sigma X_t\,dB_t,
+\]
+Divide both sides by \( X_t \):
+\[
+\frac{dX_t}{X_t} = \mu\,dt + \sigma\,dB_t.
+\]
+Let \( Y_t = \ln X_t \). Ito's Lemma states that for a twice-differentiable function \( f(X_t) \):
+
+\[
+df(X_t) = f'(X_t)\,dX_t + \frac{1}{2}f''(X_t)(dX_t)^2.
+\]
+\[
+f'(X_t) = \frac{1}{X_t}, \quad f''(X_t) = -\frac{1}{X_t^2}.
+\]
+\[
+dY_t = \frac{1}{X_t}\,dX_t - \frac{1}{2}\frac{1}{X_t^2}(dX_t)^2.
+\]
+Given \( dX_t = \mu X_t\,dt + \sigma X_t\,dB_t \), we have:
+
+\[
+(dX_t)^2 = (\sigma X_t\,dB_t)^2 = \sigma^2 X_t^2\,dt,
+\]
+
+since \( (dB_t)^2 = dt \) and higher-order terms are negligible (i.e. they go to 0 faster than $\Delta t$). Substituting \( dX_t \) and \( (dX_t)^2 \) into the equation for \( dY_t \):
+
+\[
+dY_t = \frac{1}{X_t}(\mu X_t\,dt + \sigma X_t\,dB_t) - \frac{1}{2}\frac{1}{X_t^2}(\sigma^2 X_t^2\,dt).
+\]
+\[
+dY_t = \mu\,dt + \sigma\,dB_t - \frac{1}{2}\sigma^2\,dt.
+\]
+Integrate from 0 to \( t \):
+\[
+\int_{0}^{t} dY_s = \int_{0}^{t} \left( \mu - \frac{1}{2}\sigma^2 \right) ds + \int_{0}^{t} \sigma\,dB_s.
+\]
+\[
+Y_t - Y_0 = \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t.
+\]
+Since \( Y_t = \ln X_t \) and \( Y_0 = \ln X_0 \):
+\[
+\ln X_t = \ln X_0 + \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t.
+\]
+\[
+X_t = X_0 \exp\left( \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma B_t \right).
+\]
+
+
+\item For Geometric Brownian motion as defined above, show that $\mathbb E = X_0 e^{\mu t}$.
+
+\textbf{Answer:} Using the MGF of the normal distribution:
+\[
+\mathbb{E}\left[ \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \sigma B_t \right) \right] = \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \frac{\sigma^2 t}{2} \right)
+\]
+Simplifying the exponent:
+\[
+\left( \mu - \frac{\sigma^2}{2} \right) t + \frac{\sigma^2 t}{2} = \mu t
+\]
+Thus:
+\[
+\mathbb{E}\left[ \exp\left( \left( \mu - \frac{\sigma^2}{2} \right) t + \sigma B_t \right) \right] = \exp\left( \mu t \right)
+\]
+Substituting back into the expression for \( \mathbb{E}[X_t] \):
+\[
+\mathbb{E}[X_t] = X_0 \exp\left( \mu t \right) = X_0 e^{\mu t}
+\]
+
+\item The Ornstein-Uhlenbeck (OU) process is like a continuous-time variant of the AR(1) process. It evolves as $dX_t = - \mu X_t dt + \sigma dB_t$ for drift parameter $\mu$, diffusion parameter $\sigma$, and some $X$. Show that it solves 
+\begin{equation*}
+	X_t = X_0 e^{- \mu t} + \sigma \int_0^t e^{-\mu(t - s)} dB_s.
+\end{equation*}
+
+\textbf{Answer:} Rearranging terms to match the standard linear form:
+\[
+dX_t + \mu X_t \, dt = \sigma \, dB_t
+\]
+The integrating factor \( M(t) \) is defined as:
+\[
+M(t) = \exp\left( \int_{0}^{t} \mu \, ds \right) = e^{\mu t}
+\]
+Multiplying the entire SDE by \( M(t) = e^{\mu t} \):
+\[
+e^{\mu t} \, dX_t + \mu e^{\mu t} X_t \, dt = \sigma e^{\mu t} \, dB_t
+\]
+Notice that the left-hand side is the differential of the product \( e^{\mu t} X_t \). Specifically:
+\[
+d\left( e^{\mu t} X_t \right) = e^{\mu t} \, dX_t + \mu e^{\mu t} X_t \, dt
+\]
+Therefore, the equation simplifies to:
+\[
+d\left( e^{\mu t} X_t \right) = \sigma e^{\mu t} \, dB_t
+\]
+\[
+\int_{0}^{t} d\left( e^{\mu s} X_s \right) = \sigma \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+The left-hand side simplifies to:
+\[
+e^{\mu t} X_t - e^{\mu \cdot 0} X_0 = e^{\mu t} X_t - X_0
+\]
+Thus:
+\[
+e^{\mu t} X_t - X_0 = \sigma \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+\[
+X_t = X_0 e^{-\mu t} + \sigma e^{-\mu t} \int_{0}^{t} e^{\mu s} \, dB_s
+\]
+\[
+X_t = X_0 e^{-\mu t} + \sigma \int_{0}^{t} e^{-\mu (t - s)} \, dB_s
+\]
+
+\item Let $X_t = \int_0^t B_s ds$ and $Y_t = \int_0^t B_s^2 ds$. Compute $\mathbb E(X_t)$ and $\mathbb E(Y_t)$, as well as $\mathbb Var(X_t)$ and $\mathbb Var(Y_t)$. 
+
+\textbf{Answer:} the expectation of $X_t$:
+    \[
+    \mathbb{E}[X_t] = \mathbb{E}\left[ \int_0^t B_s \, ds \right] = \int_0^t \mathbb{E}[B_s] \, ds
+    \]
+    Since \( B_s \) is a standard Brownian motion, \( \mathbb{E}[B_s] = 0 \) for all \( s \). Therefore:
+    \[
+    \mathbb{E}[X_t] = \int_0^t 0 \, ds = 0
+    \]
+
+Variance of \( X_t \):
+    \[
+    \mathbb{Var}(X_t) = \mathbb{E}[X_t^2] - (\mathbb{E}[X_t])^2 = \mathbb{E}\left[ \left( \int_0^t B_s \, ds \right)^2 \right] - 0 = \mathbb{E}\left[ \int_0^t \int_0^t B_s B_u \, ds \, du \right]
+    \]
+    \[
+    = \int_0^t \int_0^t \mathbb{E}[B_s B_u] \, ds \, du
+    \]
+    Recall that for standard Brownian motion:
+    \[
+    \mathbb{E}[B_s B_u] = \min\{s, u\}
+    \]
+    Therefore:
+    \[
+    \mathbb{Var}(X_t) = \int_0^t \int_0^t \min\{s, u\} \, ds \, du
+    \]
+    We can just evaluate the integral for $s\leq u$ and multiply it by 2, since the $s\leq u$ is symmetric.
+    \[
+    \mathbb{Var}(X_t) = 2 \int_0^t \int_0^u s \, ds \, du = 2 \int_0^t \left[ \frac{s^2}{2} \Big|_{0}^{u} \right] du = 2 \int_0^t \frac{u^2}{2} \, du = \int_0^t u^2 \, du = \frac{t^3}{3}
+    \]
+Turning to the expectation of $Y_t$:
+    \[
+    \mathbb{E}[Y_t] = \mathbb{E}\left[ \int_0^t B_s^2 \, ds \right] = \int_0^t \mathbb{E}[B_s^2] \, ds
+    \]
+    For a standard Brownian motion, \( B_s \sim \mathcal{N}(0, s) \), so:
+    \[
+    \mathbb{E}[B_s^2] = \text{Var}(B_s) + (\mathbb{E}[B_s])^2 = s + 0 = s
+    \]
+    Thus:
+    \[
+    \mathbb{E}[Y_t] = \int_0^t s \, ds = \frac{t^2}{2}
+    \]
+
+    Variance of \( Y_t \):
+    \[
+    \mathbb{Var}(Y_t) = \mathbb{E}[Y_t^2] - (\mathbb{E}[Y_t])^2 = \mathbb{E}\left[ \left( \int_0^t B_s^2 \, ds \right)^2 \right] - \left( \frac{t^2}{2} \right)^2
+    \]
+    \[
+    = \int_0^t \int_0^t \mathbb{E}[B_s^2 B_u^2] \, ds \, du - \frac{t^4}{4}
+    \]
+    Again, we can just evaluate the integral for $s\leq u$ and multiply it by 2, since the $s\leq u$ is symmetric. To compute \( \mathbb{E}[B_s^2 B_u^2] \), using the properties of jointly Gaussian variables:
+    \[
+    \mathbb{E}[B_s^2 B_u^2] = \mathbb{E}[B_s^2] \mathbb{E}[B_u^2] + 2 (\mathbb{E}[B_s B_u])^2 = s \cdot u + 2 s^2 = s u + 2 s^2
+    \]
+    Therefore:
+    \[
+    \mathbb{E}[Y_t^2] = 2 \int_0^t \int_0^u (2 s^2 + s u) \, ds \, du
+    \]
+    \[
+    = 2 \left( \int_0^t \int_0^u 2 s^2 \, ds \, du + \int_0^t \int_0^u s u \, ds \, du \right)
+    \]
+    Compute each integral separately:
+    \[
+    \int_0^u 2 s^2 \, ds = 2 \cdot \frac{u^3}{3} = \frac{2}{3} u^3
+    \]
+    \[
+    \int_0^u s u \, ds = u \cdot \frac{u^2}{2} = \frac{u^3}{2}
+    \]
+    Thus:
+    \[
+    \mathbb{E}[Y_t^2] = 2 \left( \frac{2}{3} \int_0^t u^3 \, du + \frac{1}{2} \int_0^t u^3 \, du \right ) = 2 \left( \frac{2}{3} \cdot \frac{t^4}{4} + \frac{1}{2} \cdot \frac{t^4}{4} \right ) = 2 \left( \frac{t^4}{6} + \frac{t^4}{8} \right ) = 2 \cdot \frac{7 t^4}{24} = \frac{7 t^4}{12}
+    \]
+    
+    Therefore, the variance of \( Y_t \) is:
+    \[
+    \mathbb{Var}(Y_t) = \mathbb{E}[Y_t^2] - \left( \mathbb{E}[Y_t] \right)^2 = \frac{7 t^4}{12} - \left( \frac{t^2}{2} \right)^2 = \frac{7 t^4}{12} - \frac{t^4}{4} = \frac{7 t^4}{12} - \frac{3 t^4}{12} = \frac{4 t^4}{12} = \frac{t^4}{3}
+    \]
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 2: Poisson Process}
+
+\begin{enumerate}[(a)]
+\item Consider a two-state Markov chain in continuous time denoted $Y_t$, which can take on values in $\{Y^1, Y^2\}$. The transition rate is given by $\lambda$ regardless of the current state. Suppose we are in state $1$ at $t = 0$. Compute the expected time until the process switches to state $2$. 
+
+\textbf{Answer:} In this scenario, the time until the first transition from state \( Y^1 \) to \( Y^2 \) follows an exponential distribution with rate \( \lambda \). This is because, in a continuous-time Markov chain, the holding time in a state before transitioning to a different state is exponentially distributed with the rate equal to the transition rate out of that state.\\
+The expected value of the exponential distribution is then:
+\[
+\mathbb{E}[T_{1 \to 2}] = \frac{1}{\lambda}
+\]
+
+\item Now suppose that the transition rates differ depending on which state we are in. That is, if we're in state $1$ we transition to rate $2$ at rate $\lambda_1$, and vice versa at rate $\lambda_2$. Show that the fraction of time the process spends in states $1$ and $2$ converges in the long run to $\frac{\lambda_2}{\lambda_1 + \lambda_2}$ and $\frac{\lambda_1}{\lambda_1 + \lambda_2}$.
+
+\textbf{Answer:} The long-run fraction of time that a continuous-time Markov chain spends in each state is given by its stationary distribution. That is, the fraction of time I spend in a given state is numerically equal to the probability that I am in that state at any given time.  Let the stationary probabilities be \( \pi_1 \) and \( \pi_2 \) for states \( Y^1 \) and \( Y^2 \). The stationary probability $\pi_1$ must satisfy:
+ \[
+   \pi_1 = \pi_2 \lambda_2 + \pi_1 (1-\lambda_1)
+ \]
+I.e. the probability of being in state one is equal to the probability of being in state two and transitioning to state 1 plus being in state 1 and remaining in state 1.
+So that
+  \[
+   \pi_1 \lambda_1 = \pi_2 \lambda_2
+   \]
+Furthermore:
+   \[
+   \pi_1 + \pi_2 = 1
+   \]
+From first condition:
+\[
+\pi_1 \lambda_1 = \pi_2 \lambda_2 \implies \pi_2 = \frac{\lambda_1}{\lambda_2} \pi_1
+\]
+Substituting \( \pi_2 \) into the second condition:
+\[
+\pi_1 + \left( \frac{\lambda_1}{\lambda_2} \pi_1 \right) = 1 \implies \pi_1 \left( 1 + \frac{\lambda_1}{\lambda_2} \right) = 1
+\]
+\[
+\pi_1 = \frac{1}{1 + \dfrac{\lambda_1}{\lambda_2}} = \frac{\lambda_2}{\lambda_1 + \lambda_2}
+\]
+Similarly:
+\[
+\pi_2 = 1 - \pi_1 = 1 - \frac{\lambda_2}{\lambda_1 + \lambda_2} = \frac{\lambda_1}{\lambda_1 + \lambda_2}
+\]
+
+\item What is $\mathbb E (Y_t \mid Y_0 = Y^1)$?
+
+\textbf{Answer}: Let \( Y^1 = 1 \) and \( Y^2 = 0 \). This simplifies the problem so that the expected value \( \mathbb{E}(Y_t \mid Y_0 = 1) \) is simply the probability that \( Y_t = 1 \) given \( Y_0 = 1 \).
+\[
+\mathbb{E}(Y_t \mid Y_0 = 1) = \mathbb{P}(Y_t = 1 \mid Y_0 = 1)
+\]
+
+Denote $\mathbb{P}(Y_t = 1 )= \pi_1(t) $
+
+The transition-rate matrix \( Q \) for the Markov chain is:
+\[
+Q = \begin{pmatrix}
+    -\lambda_1 & \lambda_1 \\
+    \lambda_2 & -\lambda_2 \\
+\end{pmatrix}
+\]
+And thus the probability \( \pi_1(t) \) satisfies the differential equation (Kolmogorov forward equation):
+\[
+\frac{d}{dt} \pi_1(t) = -\lambda_1 \pi_1(t) + \lambda_2 \pi_0(t)
+\]
+
+Since \( \pi_0(t) = 1 - \pi_1(t) \), we have:
+
+\[
+\frac{d}{dt} \pi_1(t) = -\lambda_1 \pi_1(t) + \lambda_2 \left( 1 - \pi_1(t) \right)
+\]
+\[
+\frac{d}{dt} \pi_1(t) = -(\lambda_1 + \lambda_2) \pi_1(t) + \lambda_2
+\]
+
+This is a linear ordinary differential equation (ODE). We can solve it using an integrating factor.
+
+   \[
+   \mu(t) = \exp\left( \int (\lambda_1 + \lambda_2) \, dt \right) = e^{(\lambda_1 + \lambda_2)t}
+   \]
+Multiplying both sides by the integrating factor:
+
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \frac{d}{dt} \pi_1(t) + (\lambda_1 + \lambda_2) e^{(\lambda_1 + \lambda_2)t} \pi_1(t) = \lambda_2 e^{(\lambda_1 + \lambda_2)t}
+   \]
+
+And noting that the left-hand side is just the result of a product rule:
+
+   \[
+   \frac{d}{dt} \left( e^{(\lambda_1 + \lambda_2)t} \pi_1(t) \right) = \lambda_2 e^{(\lambda_1 + \lambda_2)t}
+   \]
+   Integrate from \( 0 \) to \( t \):
+   \[
+   \int_{0}^{t} \frac{d}{dt} \left( e^{(\lambda_1 + \lambda_2)t} \pi_1(t) \right) dt = \int_{0}^{t} \lambda_2 e^{(\lambda_1 + \lambda_2)t} dt
+   \]
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \pi_1(t) - e^{0} \pi_1(0) = \lambda_2 \int_{0}^{t} e^{(\lambda_1 + \lambda_2)s} ds
+   \]
+
+Note that $\int_{0}^{t} e^{(\lambda_1 + \lambda_2)s} ds = \frac{1}{\lambda_1 + \lambda_2} \left( e^{(\lambda_1 + \lambda_2)t} - 1 \right)$ and substitute \( \pi_1(0) = 1 \):
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \pi_1(t) - 1 = \frac{\lambda_2}{\lambda_1 + \lambda_2} \left( e^{(\lambda_1 + \lambda_2)t} - 1 \right)
+   \]
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \pi_1(t) = 1 + \frac{\lambda_2}{\lambda_1 + \lambda_2} \left( e^{(\lambda_1 + \lambda_2)t} - 1 \right)
+   \]
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \pi_1(t) = \frac{\lambda_1 + \lambda_2}{\lambda_1 + \lambda_2} + \frac{\lambda_2}{\lambda_1 + \lambda_2} \left( e^{(\lambda_1 + \lambda_2)t} - 1 \right)
+   \]
+   \[
+   e^{(\lambda_1 + \lambda_2)t} \pi_1(t) = \frac{\lambda_1}{\lambda_1 + \lambda_2} + \frac{\lambda_2}{\lambda_1 + \lambda_2} e^{(\lambda_1 + \lambda_2)t}
+   \]
+   \[
+   (\lambda_1 + \lambda_2) e^{(\lambda_1 + \lambda_2)t} \pi_1(t) = \lambda_1 + \lambda_2 e^{(\lambda_1 + \lambda_2)t}
+   \]
+
+   Divide both sides by \( (\lambda_1 + \lambda_2) e^{(\lambda_1 + \lambda_2)t} \):
+
+   \[
+   \pi_1(t) = \frac{\lambda_1}{\lambda_1 + \lambda_2} e^{-(\lambda_1 + \lambda_2)t} + \frac{\lambda_2}{\lambda_1 + \lambda_2}
+   \]
+Since:
+\[
+\mathbb{E}(Y_t \mid Y_0 = 1) = 1 \cdot \pi_1(t) + 0 \cdot \left( 1 - \pi_1(t) \right) = \pi_1(t)
+\]
+We have that:
+\[
+\mathbb{E}(Y_t \mid Y_0 = 1) = \frac{\lambda_1}{\lambda_1 + \lambda_2} e^{-(\lambda_1 + \lambda_2)t} + \frac{\lambda_2}{\lambda_1 + \lambda_2}
+\]
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 3: Ito's Lemma}
+
+\begin{enumerate}[(a)]
+\item Let $dX_t = - \alpha X_t dt + \sigma dB_t$, and $f(t, X_t) = e^{\alpha t} X_t$. Show that $df = \sigma e^{\alpha t} d B$. 
+
+\textbf{Answer:} given $
+f(t, X_t) = e^{\alpha t} X_t
+$, note that:
+   \[
+   \frac{\partial f}{\partial t} = \alpha e^{\alpha t} X_t\text{, \  } \frac{\partial f}{\partial X} = e^{\alpha t}\text{, \  } \frac{\partial^2 f}{\partial X^2} = 0 
+   \]
+Ito's Lemma states:
+\[
+df = \left( \frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial X} + \frac{1}{2} \sigma^2 \frac{\partial^2 f}{\partial X^2} \right) dt + \sigma \frac{\partial f}{\partial X} \, dB_t
+\]
+where \( \mu \) and \( \sigma \) are from the SDE of \( X_t \):
+\[
+dX_t = \mu \, dt + \sigma \, dB_t
+\]
+Given \( \mu = -\alpha X_t \) and \( \sigma \) is constant. Therefore,
+\[
+df = \left( \alpha e^{\alpha t} X_t + (-\alpha X_t) e^{\alpha t} + 0 \right) dt + \sigma e^{\alpha t} \, dB_t
+\]
+\[
+df = \left( \alpha e^{\alpha t} X_t - \alpha e^{\alpha t} X_t \right) dt + \sigma e^{\alpha t} \, dB_t = \sigma e^{\alpha t} \, dB_t
+\]
+\[
+df = \sigma e^{\alpha t} \, dB_t
+\]
+
+\item Consider the capital accumulation equation $dK_t = (\iota - \delta) K_t dt + \sigma K_t dB_t$, where $\iota$ is the investment rate. Suppose our value function is $V(K_t)$. Use Ito's lemma to solve for $dV_t$.   
+
+\textbf{Answer:} Applying Ito's Lemma for a function \( V(K_t) \) where \( K_t \) follows:
+\[
+dK_t = \mu_K \, dt + \sigma_K \, dB_t
+\]
+With $\mu_K =  (\iota - \delta) K_t$ and $\sigma_K = \sigma K_t$ gives us:
+%\[
+%dV_t = V_K \, dK_t + \frac{1}{2} V_{KK} (dK_t)^2
+%\]
+%Note that: \[
+%(dK_t)^2 = \left( (\iota - \delta) K_t \, dt + \sigma K_t \, dB_t \right)^2 = (\sigma K_t \, dB_t)^2 = \sigma^2 K_t^2 \, dt
+%\]
+%since \( (dt)^2 = 0 \) and \( dt \, dB_t = 0 \), and \( (dB_t)^2 = dt \). Then, we have:
+%\[
+%dV_t = V_K \, dK_t + \frac{1}{2} V_{KK} \sigma^2 K_t^2 \, dt
+%\]
+%Substitute \( dK_t \):
+%\[
+%dV_t = V_K \left( (\iota - \delta) K_t \, dt + \sigma K_t \, dB_t \right) + \frac{1}{2} V_{KK} \sigma^2 K_t^2 \, dt
+%\]
+%Finally:
+\[
+dV_t = \left( V_K (\iota - \delta) K_t + \frac{1}{2} V_{KK} \sigma^2 K_t^2 \right) dt + V_K \sigma K_t \, dB_t
+\]
+
+
+\item Suppose $X_t = f(t, B_t)$ for some function $f$. In this problem, we will solve for $f$. The only information we have is that 
+\begin{equation*}
+	dX_t = X_t dB_t.
+\end{equation*}
+Use Ito's lemma to derive two conditions on the partial derivatives of $f(\cdot)$. (That is, group the $dt$ and $dB$ terms and reason via coefficient-matching.) Show that the function $f(t, x) = e^{x - \frac{1}{2}t}$ satisfies these conditions.
+
+\textbf{Answer:} we are given:
+\[
+X_t = f(t, B_t) \text{, \ }dX_t = X_t \, dB_t
+\]
+Since $\mu$ is 0 in this case, Ito's Lemma becomes:
+\[
+dX_t = \left( \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} \right) dt + \frac{\partial f}{\partial x} \, dB_t
+\]
+But from the given, 
+\[
+dX_t = X_t \, dB_t = f(t, B_t) \, dB_t
+\]
+So that:
+\[
+\left( \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} \right) dt + \frac{\partial f}{\partial x} \, dB_t = f(t, B_t) \, dB_t
+\]
+Then, matching coefficients, note that from the \( dB_t \) terms we get $\frac{\partial f}{\partial x} = f(t, x)$, and from the \( dt \) terms, we get $\frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} = 0$.
+\[
+\frac{\partial f}{\partial x} = f(t, x) \implies f(t, x) = e^{x} e^{C_1(t)}
+\]
+Now, let us compute the terms in the Ito's Lemma equation:
+ \[
+  \frac{\partial f}{\partial t} = e^{x} e^{C_1(t)} C_1'(t) = f(t, x) C_1'(t)
+  \]
+  \[
+  \frac{\partial f}{\partial x} = e^{x} e^{C_1(t)} = f(t, x)
+  \]
+  \[
+  \frac{\partial^2 f}{\partial x^2} = f(t, x)
+  \]
+Then,
+\[
+\frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} = 0
+\implies
+f(t, x) C_1'(t) + \frac{1}{2} f(t, x) = 0
+\implies 
+C_1'(t) = -\frac{1}{2}
+\]
+So integrating both sides, we get: 
+\[
+C_1(t) = -\frac{1}{2} t + C_2
+\]
+Therefore:
+\[
+f(t, x) = e^{x} e^{C_1(t)} = e^{x} e^{ -\frac{1}{2} t + C_2 } = e^{C_2} e^{ x - \frac{1}{2} t }
+\]
+Letting, e.g. $e^{C_2}=1$, we get:
+\[
+f(t, x) = e^{ x - \frac{1}{2} t }
+\]
+Which satisfies the conditions by construction.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 4: Generator}
+
+We defined the generator of a stochastic process in class. The generator is extremely useful when we want to quickly write down the HJB associated with a dynamic optimization problem. 
+
+\vspace{4mm}
+\begin{enumerate}[(a)]
+\item Consider the wealth and income processes 
+\begin{align*}
+	da_t &= (ra_t + y_t - c_t)dt + \sigma dB_t \\
+	dy_t &= \theta (\bar y - y_t) dt + \nu W_t
+\end{align*}
+where $B_t$ and $W_t$ are independent standard Brownian motion. Write down the generator $\mathcal A$ for the two-dimensional process
+\begin{equation*}
+	\begin{pmatrix}
+		d a_t \\
+		d y_t 
+	\end{pmatrix}
+\end{equation*}
+That is, what is $\mathcal A V$ for a given (smooth) function $V(a_t, y_t)$?
+
+\textbf{Answer:} the generator \( \mathcal{A} \) of a multi-dimensional diffusion process is given by:
+\[
+\mathcal{A} V(a, y) = \mu_a V_a + \mu_y V_y + \frac{1}{2} \sigma_a^2 V_{aa} + \frac{1}{2} \sigma_y^2 V_{yy} + \sigma_a \sigma_y \rho V_{a y},
+\]
+where:
+\begin{itemize}
+    \item \( \mu_a \) and \( \mu_y \) are the drift terms,
+    \item \( \sigma_a \) and \( \sigma_y \) are the diffusion coefficients,
+    \item \( V_a = \frac{\partial V}{\partial a} \), \( V_y = \frac{\partial V}{\partial y} \),
+    \item \( V_{aa} = \frac{\partial^2 V}{\partial a^2} \), \( V_{yy} = \frac{\partial^2 V}{\partial y^2} \),
+    \item \( V_{a y} = \frac{\partial^2 V}{\partial a \partial y} \),
+    \item \( \rho \) is the correlation coefficient between \( dB_t \) and \( dW_t \).
+\end{itemize}
+However, since \( B_t \) and \( W_t \) are independent, \( \rho = 0 \), and the cross-partial term \( V_{a y} \) does not contribute to the generator.
+From the given SDEs:
+\begin{align*}
+    da_t &= \mu_a \, dt + \sigma_a \, dB_t, \\
+    dy_t &= \mu_y \, dt + \sigma_y \, dW_t,
+\end{align*}
+where:
+\begin{align*}
+    \mu_a &= r a_t + y_t - c_t, \quad \sigma_a = \sigma, \\
+    \mu_y &= \theta (\bar{y} - y_t), \quad \sigma_y = \nu.
+\end{align*}
+\[
+\mathcal{A} V(a, y) = \left( r a + y - c_t \right) V_a + \theta (\bar{y} - y) V_y + \frac{1}{2} \sigma^2 V_{aa} + \frac{1}{2} \nu^2 V_{yy}.
+\]
+
+\item Consider the capital accumulation process
+\begin{align*}
+	dk_t &= (\iota - \delta) k_t dt. 
+\end{align*}
+Also suppose that firm technology $A_t$ follows a two-state Markov chain (Poisson process) with transition rates $\lambda$. That is, $A_t$ can take on values in $\{A^1, A^2\}$. Suppose that the enterprise value of the firm is given by some function $V(k_t, A_t)$. Characterize the generator of the process
+\begin{equation*}
+	\begin{pmatrix}
+		d k_t \\
+		d A_t 
+	\end{pmatrix}
+\end{equation*}
+That is, what is $\mathcal A V$ for a given (smooth) function $V(k_t, A_t)$? (Recall that $\mathcal A V = \mathbb E[d V]$, so the expression you just solved for tells us how the firm's enterprise value evolves in expectation.)
+
+\textbf{Answer:}    The dynamics of \( k_t \) are deterministic (since there is no stochastic term):
+   \[
+   dk_t = \mu_k \, dt, \quad \text{where} \quad \mu_k = (\iota - \delta) k_t.
+   \]
+The process \( A_t \) is a continuous-time Markov chain with two states \( A^1 \) and \( A^2 \), and transitions occur at rate \( \lambda \). The generator \( \mathcal{A} \) for the combined process \( (k_t, A_t) \) consists of two parts:
+
+1. Continuous Part (Capital Accumulation):
+
+   The contribution from the continuous variable \( k_t \) is:
+   \[
+   \mathcal{A}_{\text{cont}} V(k, A) = \mu_k V_k(k, A) = (\iota - \delta) k
+   \]
+   where \( V_k = \frac{\partial V}{\partial k} \).
+
+2. Jump Part (Technology State Transitions):
+
+   The contribution from the Markov chain \( A_t \) is given by:
+   \[
+   \mathcal{A}_{\text{jump}} V(k, A) = \sum_{A' \neq A} q_{A A'} [V(k, A') - V(k, A)],
+   \]
+   where \( q_{A A'} \) is the transition rate from state \( A \) to state \( A' \).
+
+   Since the transition rates are symmetric and equal to \( \lambda \), we have:
+   \[
+   \mathcal{A}_{\text{jump}} V(k, A) = \lambda [V(k, A_{\text{other}}) - V(k, A)],
+   \]
+   where \( A_{\text{other}} \) is the alternative state (i.e., if \( A = A^1 \), then \( A_{\text{other}} = A^2 \), and vice versa).
+The total generator \( \mathcal{A} V(k, A) \) is the sum of the continuous and jump parts:
+\[
+\mathcal{A} V(k, A) = \underbrace{(\iota - \delta) k V_k(k, A)}_{\text{Continuous Part}} + \underbrace{\lambda [V(k, A_{\text{other}}) - V(k, A)]}_{\text{Jump Part}}.
+\]
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 5: Consumption with Income Uncertainty}
+
+Consider a household whose lifetime utility is given by 
+\begin{equation*}
+	V_0 = \max_{ \{c_t\} } \, \mathbb E_0 \int_0^\infty e^{- \rho t} u(c_t) dt.
+\end{equation*}
+The household makes consumption-savings decisions facing the budget constraint 
+\begin{equation*}
+	da_t = r a_t + y_t - c_t.
+\end{equation*}
+Here, $y_t$ is the household's income process. We cannot perfectly forecast our future income, so we will assume that $y_t$ is a stochastic process. Below, you will be asked to write down the HJB associated with this problem for the two canonical models of income uncertainty.
+
+\vspace{4mm}
+\begin{enumerate}[(a)]
+\item Suppose that income follows the diffusion (Ornstein-Uhlenbeck / AR1) process
+\begin{equation*}
+	dy_t = \theta(\bar y - y_t) dt + \sigma dB_t.
+\end{equation*}
+Write down the HJB for this problem that characterizes the household value function $V(a, y)$. 
+
+\textbf{Answer:} starting from the recursive formulation in discrete time: 
+$$
+V(a_t, y_t) = \max \left\{ u(c_t) \Delta + \frac{1}{1 + \rho \Delta} \mathbb{E}\left[ V(a_{t+\Delta}, y_{t+\Delta})\right] \right\}
+$$
+$$
+(1 + \rho \Delta) V(a_t, y_t) = \max \left\{ (1 + \rho \Delta) u(c_t) \Delta + \mathbb{E}\left[ V(a_{t+\Delta}, y_{t+\Delta})\right] \right\}
+$$
+$$
+\rho V(a_t, y_t) = \max \left\{ (1 + \rho \Delta) u(c_t) + \frac{\mathbb{E}\left[V(a_{t+\Delta}, y_{t+\Delta}) - V(a_t, y_t)\right]}{\Delta} \right\}
+$$
+$$
+\rho V(a_t, y_t) = \max \left\{ u(c_t) +  \frac{\mathbb{E}\left[dV(a_t,y_t)\right]}{dt} \right\} 
+$$
+But we know $dV$, by Ito's Lemma, must be:
+$$dV(a,t)=\left(V_a(a, y) \left[ r a + y - c \right] + V_y(a, y) \theta (\bar{y} - y) + \frac{1}{2} V_{yy}(a, y) \sigma^2\right)dt + \sigma V_y(a, y) B_t $$
+But the last term is zero in expectations, so that:
+\[
+\rho V(a, y) = \max_{c} \left\{ u(c) + V_a(a, y) \left[ r a + y - c \right] + V_y(a, y) \theta (\bar{y} - y) + \frac{1}{2} V_{yy}(a, y) \sigma^2 \right\}.
+\]
+
+\item Now suppose that income follows a two-state Markov chain (Poisson process). Income can be high or low, $\in \{y^L, y^H\}$. The transition rate from high to low is $\lambda^H$ and the transition rate from low to high is $\lambda^L$. Write down the HJB for this problem that characterizes the household value function $V(a, y)$. 
+
+\textbf{Answer:} let:
+\begin{align*}
+V^H(a) &= V(a, y^H), \quad \text{when income is high}, \\
+V^L(a) &= V(a, y^L), \quad \text{when income is low}.
+\end{align*}
+For High Income State (\( y = y^H \)):
+\[
+\rho V^H(a) = \max_{c} \left\{ u(c)  + V_a^H(a) \left[ r a + y^H - c \right] + \lambda^H \left[ V^L(a) - V^H(a) \right] \right\}.
+\]
+
+For Low Income State (\( y = y^L \)):
+\[
+ \rho V^L(a) = \max_{c} \left\{ u(c) + V_a^L(a) \left[ r a + y^L - c \right] + \lambda^L \left[ V^H(a) - V^L(a) \right] \right\}.
+\]
+
+
+\item Suppose that the interest rate is not constant but varies over time. We know with certainty, however, how the interest rate evolves. So $\{r_t\}$ is a deterministic sequence that is exogenously given to us. (In other words, we are characterizing the household problem in partial equilibrium; the household takes the interest rate as given.) Write down the HJB for this problem that characterizes the household value function $V(t, a, y)$. Why is this value function no longer stationary?
+
+\textbf{Answer:} In this case, the HJB equation becomes:
+\[
+\rho V(t, a, y) = \max_{c} \left\{ u(c) + V_t(t, a, y) + V_a(t, a, y) \left[ r_t a + y - c \right] + V_y(t, a, y) \mu_y + \frac{1}{2} V_{yy}(t, a, y) \sigma^2 \right\},
+\]
+We have to add a term $V_t(t, a, y)$ since in the application of Ito's Lemma that we used in the first point of this question $dV$ now must explicitly include the derivative of $V$ with respect to $t$. The problem becomes non-stationary because varying the interest rate potentially generates different value functions. Say, for example, that the household dislikes high interest rates. Then, a rising interest rate over time will mean that even for the same level of savings $a$ and income $y$, a household will be worse off in later periods. Therefore, we must index $V$ by $t$ or explicitly include $t$ as an argument of the function.
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \vspace{5mm}
+% \section*{Problem 6: Job Market Paper}
+% 
+% Imagine you were a graduate student in economics, and you are currently searching for and working on what will hopefully become your job market paper. You have to go on the job market at date $T$ (it is currently date $t = 0$). Your objective is to maximize  
+% \begin{equation*}
+% 	V_0 = \max \, \mathbb E_0 \bigg[ - \int_0^T v(\ell_t) dt + x_T \bigg]. 
+% \end{equation*}
+% Here, $\ell_t$ is your rate of work (think: total hours you work in a day), and $v(\cdot)$ encodes the disutility you get from working. You can spend your working time on one of two activities: either you search for a new project to work on ($s_t$) or you continue working on your current project ($w_t$), facing the budget constraint
+% \begin{equation*}
+% 	\ell_t = s_t + w_t.
+% \end{equation*}
+% 
+% 
+% \vspace{4mm}
+% \begin{enumerate}[(a)]
+% \item Suppose that income follows the diffusion (Ornstein-Uhlenbeck / AR1) process
+% 
+% \end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{5mm}
+\section*{Problem 6: Consumption and Portfolio Choice}
+
+Consider a household that can trade two assets. The first asset is a stock. Stocks trade at price $Q_t$ and they pay the holder dividends at rate $D_t$. That is, when you hold the stock, your ``return'' comprises both the dividend payouts and the change in price until you sell the stock, which may be positive or negative. Formally, the rate of return on the stock is 
+\begin{equation*}
+	dR = \frac{D dt + dQ}{Q}, 
+\end{equation*}
+where $\frac{D}{Q}$ is the dividend-price ratio and $\frac{dQ}{Q}$ is capital gains (change in price). We will now assume that the return process takes the form  
+\begin{equation*}
+	d R = \mu dt + \sigma dB.
+\end{equation*}
+for some $\mu$ and $\sigma$, where $B$ is standard Brownian motion. 
+
+
+The second asset the household can trade is a bond, which trades at price $P$. And we assume that the bond price evolves simply according to 
+\begin{equation*}
+	\frac{dP}{P} = r dt,
+\end{equation*}
+which is the same as saying that holding the bond earns a riskfree rate of return $r dt$. Crucially, the household can both buy and sell these assets. Assume there are no borrowing (or short-sale) constraints. 
+
+The household's lifetime value is given by
+\begin{equation*}
+	V_0 = \max \mathbb E_0 \int_0^\infty e^{- \rho t} u(c_t) dt.
+\end{equation*}
+Let's denote by $b_t$ and $k_t$ the household's bond and stock holdings. Then the household budget constraint is 
+
+\begin{equation*}
+    Q \, dk + P \, db + c \, dt = D \, k \, dt
+\end{equation*}
+
+\begin{tcolorbox}[colback=gray!10, colframe=gray!80, title=Added explanation]
+    In order to "consume" the increase in prices, you have to sell stocks or bonds,
+    which will be captured by some change in \( dk \) or \( db \) and is translated 
+    into consumption by \( Q \) or \( P \) (which are higher now).
+\end{tcolorbox}
+Why does the budget constraint take this form? On the RHS, households earn dividends at rate $D$ for each unit of stock they hold. On the LHS, households can spend on consumption, or they can choose to purchase stocks or bonds. If $dk > 0$, the household purchases new stocks at price $Q$ on top of the current stock holdings. If $dk < 0$, the household sells stocks. 
+
+
+We now define \textit{net worth} $n$ and the \textit{risky portfolio share} $\theta$ implicity via 
+\begin{align*}
+	\theta n &= Q k \\
+	(1-\theta) n &= Pb
+\end{align*}
+In other words, $n$ is a notion of total wealth of the household. And we say that the household invests fraction $\theta$ of total wealth in stocks, and fraction $1-\theta$ in bonds.  
+
+
+\vspace{5mm}
+\begin{enumerate}[(a)]
+\item Derive the law of motion for household net worth and show that it satisfies:
+\begin{equation*}
+	dn = \bigg[ r n + \theta n \Big( \mu - r \Big) - c \bigg] dt + \theta n \sigma dB
+\end{equation*}
+
+\textbf{Answer:} net worth \( n \) is defined as the total market value of the household's holdings:
+\[
+n = Q k + P b
+\]
+The change in net worth \( dn \) over an infinitesimal time interval \( dt \) is:
+\[
+dn = d(Q k) + d(P b)
+\]
+Applying Itô's lemma for products (neglecting terms of order higher than \( dt \)):
+\[
+dn = Q \, dk + k \, dQ + P \, db + b \, dP
+\]
+From the stock return equation:
+\[
+dR = \frac{D \, dt + dQ}{Q} = \mu \, dt + \sigma \, dB_t
+\]
+Solving for \( dQ \):
+\[
+dQ = Q \left( \mu \, dt + \sigma \, dB_t \right) - D \, dt
+\]
+From the bond price process:
+\[
+\frac{dP}{P} = r \, dt \implies dP = r P \, dt
+\]
+Substituting \( dQ \) and \( dP \) into the expression for \( dn \):
+\[
+\begin{aligned}
+dn &= Q \, dk + k \left[ Q \left( \mu \, dt + \sigma \, dB_t \right) - D \, dt \right] + P \, db + b \left( r P \, dt \right) \\
+&= Q \, dk + \mu Q k \, dt + \sigma Q k \, dB_t - D k \, dt + P \, db + r P b \, dt
+\end{aligned}
+\]
+The budget constraint yields:
+\[
+Q \, dk + P \, db = D \, k \, dt - c \, dt
+\]
+Substitute \( Q \, dk + P \, db \) into \( dn \):
+\[
+\begin{aligned}
+dn &= \left( D \, k \, dt - c \, dt \right) + \mu Q k \, dt + \sigma Q k \, dB_t - D k \, dt + r P b \, dt \\
+&= - c \, dt + \mu Q k \, dt + \sigma Q k \, dB_t + r P b \, dt
+\end{aligned}
+\]
+From the definitions:
+\[
+\theta n = Q k \implies k = \frac{\theta n}{Q}, \quad (1 - \theta) n = P b \implies b = \frac{(1 - \theta) n}{P}
+\]
+Substituting \( Q k = \theta n \) and \( P b = (1 - \theta) n \) into \( dn \):
+\[
+dn = - c \, dt + \mu \theta n \, dt + \sigma \theta n \, dB_t + r (1 - \theta) n \, dt
+\]
+\[
+\begin{aligned}
+dn &= \left( \mu \theta n + r (1 - \theta) n - c \right) dt + \sigma \theta n \, dB_t \\
+&= \left[ r n + \theta n (\mu - r) - c \right] dt + \sigma \theta n \, dB_t
+\end{aligned}
+\]
+
+
+\item Derive the recursive representation of the households optimization problem. That is, write down the HJB equation that characterizes the household value function $V(n)$. Why was it useful to rewrite the household problem in terms of net worth (rather than stock and bond holdings)? Why is this value function stationary?
+
+\textbf{Answer:} from the net worth dynamics derived in part (a):
+\[
+dn = \left[ r n + \theta n (\mu - r) - c \right] dt + \theta n \sigma \, dB_t
+\]
+
+The household chooses consumption \( c \) and portfolio share \( \theta \) to maximize lifetime utility:
+\[
+V(n) = \max_{\{ c_t, \theta_t \}} \mathbb{E}_0 \int_0^\infty e^{-\rho t} u(c_t) \, dt
+\]
+
+In the recursive formulation, the value function \( V(n) \) satisfies the HJB equation:
+\[
+\rho V(n) = \max_{c, \theta} \left\{ u(c) + V_n(n) \left[ r n + \theta n (\mu - r) - c \right] + \frac{1}{2} V_{nn}(n) \left( \theta n \sigma \right)^2 \right\}
+\]
+
+Rewriting the household problem in terms of net worth \( n \) simplifies the problem from one with multiple state variables (\( k, b \)) to a single state variable. This reduction in dimensionality allows us to express the budget constraint as a single SDE. It also clarifies the role of the portfolio allocation $\theta$: one can use it to potentially increase expected returns $\mu - r$, but it also introduces a potentially negative term depending on the diffusion coefficient (if the utility function is concave $\implies$ $V_{nn}(n)$ is negative). The value function \( V(n) \) is stationary because the interest rate \( r \), expected stock return \( \mu \), volatility \( \sigma \), and discount rate \( \rho \) are all constants. Thus there is nothing changing over time except for $n$, $c$ and $\theta$.
+
+\item Derive the first-order conditions for $c$ and the portfolio share $\theta$.
+
+\textbf{Answer:} the partial derivative of the HJB expression with respect to \( c \) gives:
+\[
+\frac{\partial}{\partial c} \left[ u(c) - V_n(n) c \right] = u'(c) - V_n(n)
+\]
+FOC wrt $c$:
+\[
+u'(c) = V_n(n)
+\]
+Furthermore, we have:
+\[
+\frac{\partial}{\partial \theta} \left[ V_n(n) \theta n (\mu - r) + \frac{1}{2} V_{nn}(n) \left( \theta n \sigma \right)^2 \right] = V_n(n) n (\mu - r) + V_{nn}(n) n^2 \theta \sigma^2
+\]
+FOC wrt $\theta$:
+\[
+V_n(n) n (\mu - r) + V_{nn}(n) n^2 \theta \sigma^2 = 0
+\]
+\[
+\theta = -\frac{V_n(n) (\mu - r)}{V_{nn}(n) n \sigma^2} \text{ \ if the equation is positive, and 0 otherwise.}
+\]
+
+\item Derive the Euler equation for marginal utility and show that it satisfies 
+\begin{equation*}
+	\frac{du_c}{u_c} = (\rho - r) dt - \frac{\mu - r}{\sigma} dB.
+\end{equation*}
+Notice that with CRRA utility, this implies a consumption Euler equation 
+\begin{equation*}
+	\frac{dc}{c} = \frac{r - \rho}{\gamma} dt + \frac{1+\gamma}{2} \bigg( \frac{\mu - r}{\gamma \sigma} \bigg)^2 dt + \frac{\mu - r}{\gamma \sigma} dB.
+\end{equation*}
+You don't have to derive this (but you can try). 
+
+\textbf{Answer:} apply Itô's Lemma to \( V_n(n_t) \):
+%\[
+%d V_n(n_t) = V_{nn}(n_t) \left[ \left( r n_t + \theta_t n_t (\mu - r) - c_t \right) dt + \theta_t n_t \sigma \, dB_t \right] + \frac{1}{2} V_{nnn}(n_t) (\theta_t n_t \sigma)^2 dt.
+%\]
+\[
+d V_n(n_t) =  \left[ V_{nn}(n_t)\left( r n_t + \theta_t n_t (\mu - r) - c_t \right) + \frac{1}{2} V_{nnn}(n_t)(\theta_t n_t \sigma)^2  \right]dt  + V_{nn}(n_t)\theta_t n_t \sigma \, dB_t
+\]
+From the FOC wrt $\theta$, we have:
+   \[
+   V_{nn}(n_t) n_t \theta_t \sigma^2 = - V_n(n_t) (\mu - r).
+   \]
+So the diffusion coefficient is:
+\[
+- V_n(n_t) \frac{(\mu - r)}{\sigma} \, dB_t.
+\]
+Also from the FOC wrt $\theta$, we have:
+\[
+   V_{nn}(n_t) \theta_t n_t (\mu - r) = - V_n(n_t) \frac{(\mu - r)^2}{\sigma^2}.
+   \]
+So that the drift coefficient can be written:
+\[
+ V_{nn}(n_t) \left[ r n_t - c_t \right] dt - V_n(n_t) \frac{(\mu - r)^2}{\sigma^2} dt + \frac{1}{2} V_{nnn}(n_t) (\theta_t n_t \sigma)^2 dt.
+\]
+
+ Combining the drift and diffusion terms:
+\[
+d V_n(n_t) = \left[  V_{nn}(n_t) \left[ r n_t - c_t \right]  - V_n(n_t) \frac{(\mu - r)^2}{\sigma^2}  + \frac{1}{2} V_{nnn}(n_t) (\theta_t n_t \sigma)^2  \right] dt - V_n(n_t) \frac{\mu - r}{\sigma} \, dB_t.
+\]
+
+Divide both sides by \( V_n(n_t) \):
+
+\[
+\frac{d V_n(n_t)}{V_n(n_t)} = \left[ \frac{V_{nn}(n_t)}{V_n(n_t)} \left( r n_t - c_t \right) - \frac{(\mu - r)^2}{\sigma^2} + \frac{1}{2} \frac{V_{nnn}(n_t)}{V_{n}(n_t)} (\theta_t n_t \sigma)^2  \right] dt - \frac{\mu - r}{\sigma} \, dB_t.
+\]
+We want to show that $$\left[ \frac{V_{nn}(n_t)}{V_n(n_t)} \left( r n_t - c_t \right) - \frac{(\mu - r)^2}{\sigma^2} + \frac{1}{2} \frac{V_{nnn}(n_t)}{V_{n}(n_t)} (\theta_t n_t \sigma)^2  \right] = \rho - r$$
+From the HJB:
+\[
+\rho V(n) = u(c) + V_n(n) \left[ r n + \theta n (\mu - r) - c \right] + \frac{1}{2} V_{nn}(n) (\theta n \sigma)^2
+\]
+Noting that $ V_{nn}(n_t) n_t \theta_t \sigma^2 = - V_n(n_t) (\mu - r)$:
+\[
+= u(c) + V_n(n) r n + V_n(n) \theta n (\mu - r) - V_n(n) c - \frac{1}{2} V_{n}(n) \theta n (\mu - r) \sigma
+\]
+\[
+= u(c) + V_n(n) r n + \frac{1}{2} V_n(n) \theta n (\mu - r) - V_n(n) c
+\]
+\[
+= u(c) + V_n(n) \cdot (rn - c) - \frac{1}{2} \frac{V_n(n)^2}{V_{nn}(n)} \left( \frac{\mu - r}{\sigma} \right)^2
+\]
+Derive both sides with respect to $n$:
+\[
+\begin{aligned}
+\rho V_n(n) &= u'(c) c_n(n) + V_{nn}(n) (r n - c) + V_n(n) (r - c_n(n)) - \frac{1}{2} \left( \frac{V_n(n)^2}{V_{nn}(n)} \right)' \left( \frac{\mu - r}{\sigma} \right)^2
+\end{aligned}
+\]
+\[
+\rho V_n(n) = V_{nn}(n) (r n - c) + V_n(n) r - \frac{1}{2} \left( \frac{V_n(n)^2}{V_{nn}(n)} \right)' \left( \frac{\mu - r}{\sigma} \right)^2
+\]
+\[
+\rho V_n(n) = V_{nn}(n) (r n - c) + V_n(n) r - \frac{1}{2} \left(\frac{2V_{nn}(n)^3 - V_n(n)^2 V_{nnn}(n)}{V_{nn}(n)^2}\right) \left( \frac{\mu - r}{\sigma} \right)^2
+\]
+\[
+\rho V_n(n) = V_{nn}(n) (r n - c) + V_n(n) r - V_n(n) \left( \frac{\mu - r}{\sigma} \right)^2 + \frac{1}{2}\frac{V_n(n)^2 V_{nnn}(n)}{V_{nn}(n)^2}\left( \frac{\mu - r}{\sigma} \right)^2
+\]
+Note that: 
+   \[
+   V_{nn}(n_t) n_t \theta_t \sigma^2 = - V_n(n_t) (\mu - r) \implies  (V_{nn}(n_t) n_t \theta_t \sigma)^2 = (V_n(n_t) \frac{\mu - r}{\sigma})^2
+   \]
+Therefore:
+\[
+\rho V_n(n) - V_n(n) r  = V_{nn}(n) (r n - c) - \frac{1}{2} V_n(n) \left( \frac{\mu - r}{\sigma} \right)^2 + \frac{1}{2} V_{nnn}(n)(n\theta \sigma)^2
+\]
+Dividing both sides by $V_n(n)$:
+$$\left[ \frac{V_{nn}(n_t)}{V_n(n_t)} \left( r n_t - c_t \right) - \frac{(\mu - r)^2}{\sigma^2} + \frac{1}{2} \frac{V_{nnn}(n_t)}{V_{n}(n_t)} (\theta_t n_t \sigma)^2  \right] = \rho - r$$
+Therefore, noting that $V_n(n_t)=u'(c_t)$, the Euler Equation for Marginal Utility is:
+
+\[
+\frac{d u'(c_t)}{u'(c_t)} = (\rho - r) \, dt - \frac{\mu - r}{\sigma} \, dB_t.
+\]
+
+\item Guess and verify that 
+\begin{equation*}
+	V(n) = \frac{1}{1-\gamma} \kappa^{-\gamma} n^{1-\gamma}
+\end{equation*}
+where $\kappa = \frac{1}{\gamma} \Big[ \rho - (1-\gamma)r - \frac{1-\gamma}{2\gamma} \Big( \frac{\mu-r}{\sigma} \Big)^2 \Big]$. 
+
+\textbf{Answer:} we have that:
+     \[
+     u'(c) = V_n(n) \implies c^{-\gamma} = V_n(n)
+     \]
+     \[
+     \theta = -\frac{V_n(n) (\mu - r)}{V_{nn}(n) n \sigma^2}
+     \]
+   \[
+   V_n(n) = \kappa^{-\gamma} (1 - \gamma) n^{-\gamma} \cdot \frac{1}{1 - \gamma} = \kappa^{-\gamma} n^{-\gamma}
+   \]
+   \[
+   V_{nn}(n) = -\gamma \kappa^{-\gamma} n^{-\gamma - 1} = -\gamma V_n(n) n^{-1}
+   \]
+From the consumption FOC:
+\[
+u'(c) = V_n(n) \implies c^{-\gamma} = \kappa^{-\gamma} n^{-\gamma} \implies c = \kappa n
+\]
+From the portfolio share FOC:
+\[
+\theta = -\frac{V_n(n) (\mu - r)}{V_{nn}(n) n \sigma^2} \implies \theta = -\frac{V_n(n) (\mu - r)}{ \left( -\gamma V_n(n) n^{-1} \right) n \sigma^2 } = \frac{(\mu - r)}{\gamma \sigma^2}
+\]
+Recall the HJB equation:
+\[
+\rho V(n) = u(c) + V_n(n) \left[ r n + \theta n (\mu - r) - c \right] + \frac{1}{2} V_{nn}(n) \left( \theta n \sigma \right)^2
+\]
+We want to plug in for values on the right-hand side so that we can verify that the equation holds for our guess and some constant $\kappa$.
+
+   \[
+   u(c) = \frac{1}{1 - \gamma} c^{1 - \gamma} = \frac{1}{1 - \gamma} (\kappa n)^{1 - \gamma} = \frac{1}{1 - \gamma} \kappa^{1 - \gamma} n^{1 - \gamma}
+   \]
+
+Substituting \( c = \kappa n \), and since \( V_n(n) = \kappa^{-\gamma} n^{-\gamma} \):
+     \[
+     V_n(n) \left[ r n + \theta n (\mu - r) - \kappa n \right] = V_n(n) n \left[ r + \theta (\mu - r) - \kappa \right] = \kappa^{-\gamma} n^{1 - \gamma} \left[ r + \theta (\mu - r) - \kappa \right]
+     \]
+Substituting for $V_{nn}(n)$:
+\[
+     \frac{1}{2} V_{nn}(n) \left( \theta n \sigma \right)^2 = \frac{1}{2} \left( -\gamma \kappa^{-\gamma} n^{-\gamma - 1} \right) \left( \theta^2 n^2 \sigma^2 \right)= -\frac{\gamma}{2} \kappa^{-\gamma} n^{1 - \gamma} \theta^2 \sigma^2
+     \]
+The HJB equation becomes:
+\[
+\begin{aligned}
+\rho V(n) &= \frac{1}{1 - \gamma} \kappa^{1 - \gamma} n^{1 - \gamma} + \kappa^{-\gamma} n^{1 - \gamma} \left[ r + \theta (\mu - r) - \kappa \right] - \frac{\gamma}{2} \kappa^{-\gamma} n^{1 - \gamma} \theta^2 \sigma^2 \\
+&= n^{1 - \gamma} \kappa^{-\gamma} \left[ \frac{\kappa}{1 - \gamma} + r + \theta (\mu - r) - \kappa - \frac{\gamma}{2} \theta^2 \sigma^2 \right]= n^{1 - \gamma} \kappa^{-\gamma} \left[ -\frac{\gamma \kappa}{1 - \gamma} + r + \theta (\mu - r) - \frac{\gamma}{2} \theta^2 \sigma^2 \right]
+\end{aligned}
+\]
+Noting that $\theta = \frac{\mu - r}{\gamma \sigma^2}$:
+ \[
+   \rho V(n) = n^{1 - \gamma} \kappa^{-\gamma} \left[ -\frac{\gamma \kappa}{1 - \gamma} + r + \frac{(\mu - r)^2}{\gamma \sigma^2} - \frac{ (\mu - r)^2 }{2 \gamma \sigma^2} \right] = n^{1 - \gamma} \kappa^{-\gamma} \left[ -\frac{\gamma \kappa}{1 - \gamma} + r + \frac{ (\mu - r)^2 }{2 \gamma \sigma^2 } \right]
+   \]
+Since
+  \(
+  \rho V(n) = \rho \left( \frac{1}{1 - \gamma} \kappa^{-\gamma} n^{1 - \gamma} \right)
+\),
+  \[
+  \rho \left( \frac{1}{1 - \gamma} \kappa^{-\gamma} n^{1 - \gamma} \right) = n^{1 - \gamma} \kappa^{-\gamma} \left[ -\frac{\gamma \kappa}{1 - \gamma} + r + \frac{ (\mu - r)^2 }{2 \gamma \sigma^2 } \right]
+  \]
+  \[
+  \frac{\rho}{1 - \gamma} = -\frac{\gamma \kappa}{1 - \gamma} + r + \frac{ (\mu - r)^2 }{2 \gamma \sigma^2 }
+  \]
+    \[
+   \kappa = \frac{1}{\gamma} \left[ \rho - (1 - \gamma) r - \frac{ (1 - \gamma) (\mu - r)^2 }{2 \gamma \sigma^2 } \right]
+   \]
+
+We have therefore verified that the guess is an actual solution, with the $\kappa$ defined above.
+
+\item Given the solution for $V(n)$, use the FOCs to also solve for $c(n)$ and $\theta(n)$. You have now solved the household portfolio choice problem in closed form!!
+
+\textbf{Answer:} we have obtained the expressions for $c(n)$ and $\theta n$ above:
+\[
+u'(c) = V_n(n) \implies c^{-\gamma} = \kappa^{-\gamma} n^{-\gamma} \implies c = \kappa n
+\]
+\[
+\theta = -\frac{V_n(n) (\mu - r)}{V_{nn}(n) n \sigma^2} \implies \theta = -\frac{V_n(n) (\mu - r)}{ \left( -\gamma V_n(n) n^{-1} \right) n \sigma^2 } = \frac{(\mu - r)}{\gamma \sigma^2}
+\]
+
+
+
+\item What does this model tell us? Consider the interesting special case of log utility with $\gamma = 1$. Show that consumption collapses to $c = \rho n$. This implies that you want to consume a constant fraction $\rho$ of lifetime net worth. But how much should you invest in the stock market according to this model? Take the formula for $\theta$ and plug in log utility. Let's assume an equity premium of $6\%$, so $\mu-r = 0.0.06$. And let's assume volatility of stock returns of $16\%$, so $\sigma = 0.16$. Solve for the numeric value of $\theta$, i.e., the fraction of your total wealth that this model tells you to invest in the stock market. Is this high or low? What if ``total wealth'' also includes a notion of your human capital?
+
+\textbf{Answer:} from the expression for $\kappa$ above, plugging in $\gamma=1$,
+\[
+   \kappa = \frac{1}{1} \left[ \rho - (1 - 1) r - \frac{ (1 - 1) (\mu - r)^2 }{2 \sigma^2 } \right] = \rho
+\]
+So that $c=\kappa n$ becomes $c=\rho n$. \\
+Plugging in the values given for $\mu - r$ and $\sigma$, we get:
+$$\theta = \frac{0.06}{0.16^2}=2.34375$$
+Since the share is bounded at $1$, and assuming people cannot borrow at interest rate lower than the stock market returns, people invest all their income in the stock market!\\
+This result reflects the well-known equity premium puzzle - given the observed historical equity premium, the risk aversion level implied by actual portfolio shares in the stock market is unreasonably high. \\
+The model also tells us the $\theta$ does not depend on wealth itself, so that people should invest a constant share of their income into the stock market regardless of how rich they are, which is at odds with observed evidence.\\
+Finally, human capital is an important component of a household's total wealth but is non-tradable and illiquid. Therefore, including human capital increases the net worth \( n \), but this means that your financial wealth is a lower fraction of your total wealth. I.e. you should invest more of your financial wealth, since human capital acts as an "insurance" that raises your future labor income.
+
+\end{enumerate}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
